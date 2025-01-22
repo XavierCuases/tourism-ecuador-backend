@@ -1,0 +1,14 @@
+type Query {
+  _empty: String
+}
+
+type Mutation {
+  createActivity(name: String!, location: String!, date: String!): Activity
+}
+
+type Activity {
+  id: ID!
+  name: String!
+  location: String!
+  date: String!
+}
