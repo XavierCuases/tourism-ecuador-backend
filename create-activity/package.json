@@ -1,7 +1,7 @@
 {
   "name": "create-activity",
   "version": "1.0.0",
-  "description": "Microservicio para crear actividades",
+  "description": "Microservice to create activities",
   "main": "index.js",
   "scripts": {
     "start": "node src/index.js"
