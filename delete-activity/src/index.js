@@ -1,12 +1,28 @@
-const { ApolloServer } = require('apollo-server');
-const { loadFilesSync } = require('@graphql-tools/load-files');
-const { mergeTypeDefs, mergeResolvers } = require('@graphql-tools/merge');
+require('graphql-import-node');
+const express = require("express");
+const { ApolloServer } = require("apollo-server-express");
+const typeDefs = require("./schema/deleteActivitySchema.graphql");
+const resolvers = require("./resolvers/deleteActivityResolver");
 
-const typeDefs = mergeTypeDefs(loadFilesSync('./src/schema'));
-const resolvers = mergeResolvers(loadFilesSync('./src/resolvers'));
 
-const server = new ApolloServer({ typeDefs, resolvers });
+const app = express();
 
-server.listen({ port: 4005 }).then(({ url }) => {
-  console.log(`Service running at ${url}`);
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+});
+
+
+server.start().then(() => {
+  server.applyMiddleware({ app });
+
+  
+  app.get("/", (req, res) => {
+    res.send("Delete activities microservice is running");
+  });
+
+
+  app.listen(4005, () => {
+    console.log("Servidor corriendo en http://localhost:4005/graphql");
+  });
 });
