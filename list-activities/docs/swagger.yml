@@ -1,0 +1,116 @@
+openapi: 3.0.0
+info:
+  title: List Activities Microservice
+  version: 1.0.0
+  description: API documentation for the microservice to list activities and retrieve activities by ID.
+servers:
+  - url: http://localhost:4003
+paths:
+  /graphql:
+    post:
+      summary: Execute GraphQL queries for activities
+      tags:
+        - GraphQL
+      description: Use this endpoint to send GraphQL queries for retrieving activities or searching by ID. The query must be sent in the `query` field of the JSON body.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                query:
+                  type: string
+                  description: The GraphQL query for retrieving activities.
+                  examples:
+                    ListAllActivities:
+                      value: |
+                        query {
+                          listActivities {
+                            id
+                            name
+                            location
+                            date
+                          }
+                        }
+                    GetActivityById:
+                      value: |
+                        query {
+                          getActivityById(id: "1") {
+                            id
+                            name
+                            location
+                            date
+                          }
+                        }
+      responses:
+        '200':
+          description: Query executed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      listActivities:
+                        type: array
+                        description: Array of all activities (if querying all activities).
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                              description: Unique ID of the activity.
+                              example: "123e4567-e89b-12d3-a456-426614174000"
+                            name:
+                              type: string
+                              description: Name of the activity.
+                              example: Forest hike
+                            location:
+                              type: string
+                              description: Location of the activity.
+                              example: National Park
+                            date:
+                              type: string
+                              format: date
+                              description: Date of the activity.
+                              example: 2025-05-10
+                      getActivityById:
+                        type: object
+                        description: Details of a specific activity (if querying by ID).
+                        properties:
+                          id:
+                            type: string
+                            description: Unique ID of the activity.
+                            example: "1"
+                          name:
+                            type: string
+                            description: Name of the activity.
+                            example: Forest hike
+                          location:
+                            type: string
+                            description: Location of the activity.
+                            example: National Park
+                          date:
+                            type: string
+                            format: date
+                            description: Date of the activity.
+                            example: 2025-05-10
+        '400':
+          description: Bad request. Missing or invalid query.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        message:
+                          type: string
+                          description: The error message.
+                          example: "Invalid GraphQL query."
