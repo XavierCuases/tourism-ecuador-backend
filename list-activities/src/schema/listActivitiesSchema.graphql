@@ -1,0 +1,11 @@
+type Query {
+  listActivities: [Activity] 
+  getActivityById(id: ID!): Activity 
+}
+
+type Activity {
+  id: ID!
+  name: String!
+  location: String!
+  date: String!
+}
