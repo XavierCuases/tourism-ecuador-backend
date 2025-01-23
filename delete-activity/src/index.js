@@ -2,7 +2,6 @@ const { ApolloServer } = require('apollo-server');
 const { loadFilesSync } = require('@graphql-tools/load-files');
 const { mergeTypeDefs, mergeResolvers } = require('@graphql-tools/merge');
 
-
 const typeDefs = mergeTypeDefs(loadFilesSync('./src/schema'));
 const resolvers = mergeResolvers(loadFilesSync('./src/resolvers'));
 

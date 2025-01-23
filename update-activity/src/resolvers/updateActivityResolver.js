@@ -1,9 +1,11 @@
 const dynamoDBClient = require('../database/dynamoDBClient');
-
+const validateUpdateFields = require('../utils/validateUpdateFields'); 
 module.exports = {
   Mutation: {
     updateActivity: async (_, { id, name, location, date }) => {
-      
+     
+      validateUpdateFields(name, location, date);
+
       const getParams = {
         TableName: 'Activities',
         Key: { id },
@@ -14,7 +16,7 @@ module.exports = {
         throw new Error(`No activity found with ID: ${id}`); 
       }
 
-      
+    
       const updateParams = {
         TableName: 'Activities',
         Key: { id },
@@ -22,7 +24,7 @@ module.exports = {
           SET ${name ? '#n = :name,' : ''}
               ${location ? '#l = :location,' : ''}
               ${date ? '#d = :date,' : ''}
-          `.replace(/,\s*$/, ''), 
+          `.replace(/,\s*$/, ''),
         ExpressionAttributeNames: {
           ...(name && { '#n': 'name' }),
           ...(location && { '#l': 'location' }),
@@ -36,9 +38,8 @@ module.exports = {
         ReturnValues: 'ALL_NEW',
       };
 
-      
       const result = await dynamoDBClient.update(updateParams).promise();
-      return result.Attributes;
+      return result.Attributes; 
     },
   },
 };
