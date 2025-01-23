@@ -1,13 +1,28 @@
-const { ApolloServer } = require('apollo-server');
-const { loadFilesSync } = require('@graphql-tools/load-files');
-const { mergeTypeDefs, mergeResolvers } = require('@graphql-tools/merge');
+require('graphql-import-node');
+const express = require("express");
+const { ApolloServer } = require("apollo-server-express");
+const typeDefs = require("./schema/updateActivitySchema.graphql");
+const resolvers = require("./resolvers/updateActivityResolver");
 
 
-const typeDefs = mergeTypeDefs(loadFilesSync('./src/schema'));
-const resolvers = mergeResolvers(loadFilesSync('./src/resolvers'));
+const app = express();
 
-const server = new ApolloServer({ typeDefs, resolvers });
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+});
 
-server.listen({ port: 4005 }).then(({ url }) => {
-  console.log(`Service running at ${url}`);
+
+server.start().then(() => {
+  server.applyMiddleware({ app });
+
+  
+  app.get("/", (req, res) => {
+    res.send("Update activities microservice is running");
+  });
+
+
+  app.listen(4004, () => {
+    console.log("Servidor corriendo en http://localhost:4004/graphql");
+  });
 });
