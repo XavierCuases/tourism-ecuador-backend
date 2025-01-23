@@ -1,13 +1,28 @@
 require('graphql-import-node');
-const { ApolloServer } = require('apollo-server');
-const typeDefs = require('./schema/activitySchema.graphql'); // Importa el archivo .graphql
-const resolvers = require('./resolvers/createActivityResolver');
+const express = require("express");
+const { ApolloServer } = require("apollo-server-express");
+const typeDefs = require("./schema/activitySchema.graphql");
+const resolvers = require("./resolvers/createActivityResolver");
+
+
+const app = express();
 
 const server = new ApolloServer({
   typeDefs,
   resolvers,
 });
 
-server.listen({ port: 4001 }).then(({ url }) => {
-  console.log(`Service running at ${url}`);
+
+server.start().then(() => {
+  server.applyMiddleware({ app });
+
+  
+  app.get("/", (req, res) => {
+    res.send("Activity creation microservice is running");
+  });
+
+
+  app.listen(4001, () => {
+    console.log("Servidor corriendo en http://localhost:4001/graphql");
+  });
 });
