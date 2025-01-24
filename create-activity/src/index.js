@@ -18,7 +18,7 @@ server.start().then(() => {
   configureSwagger(app);
 
   app.get("/", (req, res) => {
-    res.send("Activity creation microservice is running");
+    res.send("Activity creation the microservice is running");
   });
 
   app.listen(4001, () => {
