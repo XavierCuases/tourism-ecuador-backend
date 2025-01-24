@@ -1,7 +1,0 @@
-type Mutation {
-  deleteActivity(id: ID!): String
-}
-
-type Query {
-  _empty: String
-}
