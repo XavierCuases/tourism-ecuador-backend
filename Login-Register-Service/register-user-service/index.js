@@ -6,17 +6,17 @@ const PORT = 3000;
 
 // Configuración básica de CORS
 app.use(cors({
-    origin: 'http://localhost:3000', // Cambia esto al dominio que necesites
-    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos permitidos
-    allowedHeaders: ['Content-Type', 'Authorization'], // Encabezados permitidos
+    origin: 'http://localhost:3000', // Update this to the domain you need
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
+    allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
 }));
 
-// Conectar la base de datos y levantar el servidor
-sequelize.sync()
+// Connect to the database and start the server
+sequelize.sync({ alter: true }) // Synchronize database structure with models
     .then(() => {
         console.log('Connected database');
         app.listen(PORT, () => {
-            console.log(`Server running in http://localhost:${PORT}`);
+            console.log(`Server running at http://localhost:${PORT}`);
         });
     })
     .catch(error => console.error('Error connecting to the database:', error));

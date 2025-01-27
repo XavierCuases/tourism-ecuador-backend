@@ -23,15 +23,15 @@ const User = sequelize.define('User', {
         type: DataTypes.STRING(200),
         allowNull: false,
     },
-    is_admin: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false,
+    role: {
+        type: DataTypes.STRING(20), // Role column to define user type (e.g., "admin" or "user")
+        defaultValue: 'user', // Default role is "user"
     },
 }, {
-    tableName: 'users', // Asegura que Sequelize use el nombre exacto de la tabla
-    freezeTableName: true, // Evita que Sequelize modifique el nombre de la tabla
-    createdAt: 'created_at', // Mapea createdAt a created_at
-    updatedAt: 'updated_at', // Mapea updatedAt a updated_at
+    tableName: 'users', // Ensures Sequelize uses the exact table name
+    freezeTableName: true, // Prevent Sequelize from pluralizing table names
+    createdAt: 'created_at', // Maps createdAt to created_at in the database
+    updatedAt: 'updated_at', // Maps updatedAt to updated_at in the database
 });
 
 module.exports = User;

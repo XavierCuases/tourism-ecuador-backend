@@ -1,12 +1,32 @@
-const { app, sequelize } = require('./src/app');
+const express = require('express');
+const cors = require('cors');
+const sequelize = require('./config/database');
 
-const PORT = process.env.PORT || 3001;
+// Import routes
+const authRoutes = require('./routes/AuthRoutes'); // Login routes
+const protectedRoutes = require('./routes/ProtectedRoutes'); // Protected routes
 
-sequelize.sync()
+const app = express();
+
+// Middlewares
+app.use(cors());
+app.use(express.json());
+
+// Register routes
+app.use('/api/auth', authRoutes); // Endpoint base para login
+app.use('/api', protectedRoutes); // Endpoint base para rutas protegidas
+
+// Sync database and start the server
+sequelize.sync({ alter: true })
     .then(() => {
-        console.log('Connected database');
+        console.log('Database synchronized');
+        const PORT = process.env.PORT || 3001;
         app.listen(PORT, () => {
-            console.log(`Server running in http://localhost:${PORT}`);
+            console.log(`Server running at http://localhost:${PORT}`);
         });
     })
-    .catch(error => console.error('Error connecting to the database:', error));
+    .catch(error => {
+        console.error('Error syncing database:', error);
+    });
+
+module.exports = app;

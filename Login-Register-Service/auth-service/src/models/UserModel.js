@@ -23,10 +23,14 @@ const User = sequelize.define('User', {
         type: DataTypes.STRING(200),
         allowNull: false,
     },
+    role: {
+        type: DataTypes.STRING(20), // Role column to define user type (e.g., "admin" or "user")
+        defaultValue: 'user', // Default role is "user"
+    },
 }, {
     tableName: 'users',
-    freezeTableName: true,
-    timestamps: false,
+    freezeTableName: true, // Prevent Sequelize from pluralizing table names
+    timestamps: false, // Disable automatic timestamps
 });
 
 module.exports = User;
