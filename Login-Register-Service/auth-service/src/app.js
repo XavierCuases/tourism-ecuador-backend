@@ -1,8 +1,7 @@
 const express = require('express');
 const cors = require('cors');
-const sequelize = require('./config/database');
-const authRoutes = require('./routes/AuthRoutes'); // Login and authentication routes
-const protectedRoutes = require('./routes/ProtectedRoutes'); // Protected routes for admin and users
+const authRoutes = require('./routes/AuthRoutes'); // Rutas de autenticación
+const protectedRoutes = require('./routes/ProtectedRoutes'); // Rutas protegidas para admin y user
 
 const app = express();
 
@@ -11,7 +10,7 @@ app.use(cors());
 app.use(express.json());
 
 // Register routes
-app.use('/api/auth', authRoutes); // Base endpoint for authentication (login)
-app.use('/api', protectedRoutes); // Base endpoint for protected routes
+app.use('/api/auth', authRoutes); // Endpoint base para autenticación
+app.use('/api', protectedRoutes); // Endpoint base para rutas protegidas
 
-module.exports = { app, sequelize };
+module.exports = app; // Exporta la aplicación

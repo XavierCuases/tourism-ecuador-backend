@@ -1,23 +1,8 @@
-const express = require('express');
-const cors = require('cors');
-const sequelize = require('./config/database');
-
-// Import routes
-const authRoutes = require('./routes/AuthRoutes'); // Login routes
-const protectedRoutes = require('./routes/ProtectedRoutes'); // Protected routes
-
-const app = express();
-
-// Middlewares
-app.use(cors());
-app.use(express.json());
-
-// Register routes
-app.use('/api/auth', authRoutes); // Endpoint base para login
-app.use('/api', protectedRoutes); // Endpoint base para rutas protegidas
+const app = require('./src/app'); // Importa app.js desde src
+const sequelize = require('./src/config/database'); // Conexión a la base de datos
 
 // Sync database and start the server
-sequelize.sync({ alter: true })
+sequelize.sync({ alter: true }) // Ajusta la base de datos según los modelos
     .then(() => {
         console.log('Database synchronized');
         const PORT = process.env.PORT || 3001;
@@ -28,5 +13,3 @@ sequelize.sync({ alter: true })
     .catch(error => {
         console.error('Error syncing database:', error);
     });
-
-module.exports = app;
