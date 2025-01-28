@@ -1,4 +1,4 @@
-const { Sequelize, DataTypes } = require('sequelize');
+const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
 const User = sequelize.define('User', {
@@ -24,26 +24,13 @@ const User = sequelize.define('User', {
         allowNull: false,
     },
     role: {
-        type: DataTypes.STRING(20), // Define el rol del usuario
-        defaultValue: 'user', // Valor por defecto
+        type: DataTypes.STRING(20), // Role column to define user type (e.g., "admin" or "user")
+        defaultValue: 'user', // Default role is "user"
     },
-    created_at: {
-        type: DataTypes.DATE,
-        allowNull: true, // Permitir valores nulos temporalmente
-    },
-    updated_at: {
-        type: DataTypes.DATE,
-        allowNull: true, // Permitir valores nulos temporalmente
-    },
-    
-}, 
-      
-{
-    tableName: 'users', // Usa exactamente este nombre de tabla
-    freezeTableName: true, // Evita que Sequelize pluralice el nombre de la tabla
-    timestamps: true, // Activa las columnas `createdAt` y `updatedAt`
-    createdAt: 'created_at', // Mapea `createdAt` a `created_at`
-    updatedAt: 'updated_at', // Mapea `updatedAt` a `updated_at`
+}, {
+    tableName: 'users',
+    freezeTableName: true, // Prevent Sequelize from pluralizing table names
+    timestamps: false, // Disable automatic timestamps (no created_at, updated_at)
 });
 
 module.exports = User;
