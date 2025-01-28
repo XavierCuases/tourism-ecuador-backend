@@ -1,4 +1,4 @@
-# Create Activity API
+# Micriservice Create Activity con GraphQL 
 
 The `createActivity` API allows you to create activities with specific details such as name, location, date, description, photos, and price. This API is built using **GraphQL**, and the data is stored in a **MongoDB** database.
 
@@ -158,16 +158,6 @@ docker build -t create-activity .
 ```bash
 docker run -p 4001:4001 create-activity
 ```
-
-### Development with `nodemon`
-
-If you want to use `nodemon` inside Docker:
-
-```bash
-docker build -f Dockerfile.dev -t create-activity-dev .
-docker run -p 4001:4001 -v $(pwd)/src:/app/src create-activity-dev
-```
-
 ---
 
 ## Project Structure
