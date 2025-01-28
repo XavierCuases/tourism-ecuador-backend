@@ -1,5 +1,4 @@
-const { v4: uuidv4 } = require('uuid');
-const dynamoDBClient = require('../database/dynamoDBClient');
+const Activity = require('../models/ActivitySchema');
 const validateActivity = require('../utils/validateActivity');
 
 /**
@@ -22,7 +21,7 @@ const validateActivity = require('../utils/validateActivity');
  *                 example: |
  *                   mutation {
  *                     createActivity(name: "Cascada de Peguche", location: "Otavalo", date: "2025-01-26") {
- *                       id
+ *                       _id
  *                       name
  *                       location
  *                       date
@@ -42,10 +41,10 @@ const validateActivity = require('../utils/validateActivity');
  *                     createActivity:
  *                       type: object
  *                       properties:
- *                         id:
+ *                         _id:
  *                           type: string
  *                           description: The ID of the created activity.
- *                           example: "c6211a5d-45e3-45af-8268-2f5168da38ef"
+ *                           example: "64c12345abcde1234567890f"
  *                         name:
  *                           type: string
  *                           description: The name of the activity.
@@ -75,40 +74,30 @@ const validateActivity = require('../utils/validateActivity');
  *                         type: string
  *                         description: The error message.
  *                         example: "All fields (name, location, date) are required."
- *                       locations:
- *                         type: array
- *                         description: Where the error occurred in the GraphQL query.
- *                         items:
- *                           type: object
- *                           properties:
- *                             line:
- *                               type: integer
- *                               description: The line number of the error.
- *                             column:
- *                               type: integer
- *                               description: The column number of the error.
  */
-
 
 module.exports = {
   Mutation: {
     createActivity: async (_, { name, location, date }) => {
+      // Validate input fields
       validateActivity(name, location, date);
 
-      
-      const activity = {
-        id: uuidv4(),
-        name,
-        location,
-        date,
-      };
+      try {
+        // Log the incoming data for debugging purposes
+        console.log('Creating activity:', { name, location, date });
 
-      await dynamoDBClient.put({
-        TableName: 'Activities',
-        Item: activity,
-      }).promise();
+        // Create and save the activity document
+        const activity = new Activity({ name, location, date });
+        const savedActivity = await activity.save();
 
-      return activity;
+        console.log('Activity successfully saved:', savedActivity);
+
+        // Return the saved activity
+        return savedActivity;
+      } catch (error) {
+        console.error('Error saving activity:', error.message);
+        throw new Error('Failed to save activity to the database.');
+      }
     },
   },
 };

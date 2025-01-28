@@ -24,14 +24,26 @@ const User = sequelize.define('User', {
         allowNull: false,
     },
     role: {
-        type: DataTypes.STRING(20), // Role column to define user type (e.g., "admin" or "user")
-        defaultValue: 'user', // Default role is "user"
+        type: DataTypes.STRING(20), // Define el rol del usuario
+        defaultValue: 'user', // Valor por defecto
     },
-}, {
-    tableName: 'users', // Ensures Sequelize uses the exact table name
-    freezeTableName: true, // Prevent Sequelize from pluralizing table names
-    createdAt: 'created_at', // Maps createdAt to created_at in the database
-    updatedAt: 'updated_at', // Maps updatedAt to updated_at in the database
+    created_at: {
+        type: DataTypes.DATE,
+        allowNull: true, // Permitir valores nulos temporalmente
+    },
+    updated_at: {
+        type: DataTypes.DATE,
+        allowNull: true, // Permitir valores nulos temporalmente
+    },
+    
+}, 
+      
+{
+    tableName: 'users', // Usa exactamente este nombre de tabla
+    freezeTableName: true, // Evita que Sequelize pluralice el nombre de la tabla
+    timestamps: true, // Activa las columnas `createdAt` y `updatedAt`
+    createdAt: 'created_at', // Mapea `createdAt` a `created_at`
+    updatedAt: 'updated_at', // Mapea `updatedAt` a `updated_at`
 });
 
 module.exports = User;
