@@ -1,4 +1,4 @@
-# Micriservice Create Activity con GraphQL 
+# Microservice Create Activity con GraphQL 
 
 The `createActivity` API allows you to create activities with specific details such as name, location, date, description, photos, and price. This API is built using **GraphQL**, and the data is stored in a **MongoDB** database.
 
