@@ -4,11 +4,12 @@ const { ApolloServer } = require("apollo-server-express");
 const cors = require("cors");
 const morgan = require("morgan");
 const configureSwagger = require("./swagger");
+const connectDB = require('./database/mongoDBClient');
 const typeDefs = require("./schema/listActivitiesSchema.graphql");
 const resolvers = require("./resolvers/listActivitiesResolver"); 
 
 const app = express();
-
+connectDB();
 app.use(cors());
 
 //app.use(morgan("dev"));
@@ -25,7 +26,7 @@ server.start().then(() => {
   configureSwagger(app);
 
   app.get("/", (req, res) => {
-    res.send("Activity creation microservice is running");
+    res.send("List activities microservice is running");
   });
 
   app.use((err, req, res, next) => {

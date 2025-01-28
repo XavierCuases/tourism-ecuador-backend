@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: List Activities Microservice
   version: 1.0.0
-  description: API documentation for the microservice to list activities and retrieve activities by ID.
+  description: API documentation for listing activities and retrieving activity details by ID.
 servers:
   - url: http://localhost:4003
 paths:
@@ -11,7 +11,10 @@ paths:
       summary: Execute GraphQL queries for activities
       tags:
         - GraphQL
-      description: Use this endpoint to send GraphQL queries for retrieving activities or searching by ID. The query must be sent in the `query` field of the JSON body.
+      description: |
+        Use this endpoint to send GraphQL queries for:
+        - Retrieving all activities (`listActivities`)
+        - Searching for a specific activity by ID (`getActivityById`)
       requestBody:
         required: true
         content:
@@ -21,26 +24,32 @@ paths:
               properties:
                 query:
                   type: string
-                  description: The GraphQL query for retrieving activities.
+                  description: The GraphQL query or mutation.
                   examples:
                     ListAllActivities:
                       value: |
                         query {
                           listActivities {
-                            id
+                            _id
                             name
                             location
                             date
+                            description
+                            photos
+                            price
                           }
                         }
                     GetActivityById:
                       value: |
                         query {
-                          getActivityById(id: "1") {
-                            id
+                          getActivityById(id: "64c12345abcde1234567890f") {
+                            _id
                             name
                             location
                             date
+                            description
+                            photos
+                            price
                           }
                         }
       responses:
@@ -56,50 +65,78 @@ paths:
                     properties:
                       listActivities:
                         type: array
-                        description: Array of all activities (if querying all activities).
+                        description: List of all activities.
                         items:
                           type: object
                           properties:
-                            id:
+                            _id:
                               type: string
                               description: Unique ID of the activity.
-                              example: "123e4567-e89b-12d3-a456-426614174000"
+                              example: "64c12345abcde1234567890f"
                             name:
                               type: string
                               description: Name of the activity.
-                              example: Forest hike
+                              example: Mountain Hiking
                             location:
                               type: string
                               description: Location of the activity.
-                              example: National Park
+                              example: Andes
                             date:
                               type: string
                               format: date
                               description: Date of the activity.
-                              example: 2025-05-10
+                              example: 2025-03-15
+                            description:
+                              type: string
+                              description: Short description of the activity.
+                              example: A beautiful hike through the Andes mountains.
+                            photos:
+                              type: array
+                              items:
+                                type: string
+                              description: List of photo URLs.
+                              example: ["https://example.com/photo1.jpg"]
+                            price:
+                              type: number
+                              description: Price of the activity.
+                              example: 150.00
                       getActivityById:
                         type: object
-                        description: Details of a specific activity (if querying by ID).
+                        description: Details of the activity with the given ID.
                         properties:
-                          id:
+                          _id:
                             type: string
                             description: Unique ID of the activity.
-                            example: "1"
+                            example: "64c12345abcde1234567890f"
                           name:
                             type: string
                             description: Name of the activity.
-                            example: Forest hike
+                            example: Mountain Hiking
                           location:
                             type: string
                             description: Location of the activity.
-                            example: National Park
+                            example: Andes
                           date:
                             type: string
                             format: date
                             description: Date of the activity.
-                            example: 2025-05-10
+                            example: 2025-03-15
+                          description:
+                            type: string
+                            description: Short description of the activity.
+                            example: A beautiful hike through the Andes mountains.
+                          photos:
+                            type: array
+                            items:
+                              type: string
+                            description: List of photo URLs.
+                            example: ["https://example.com/photo1.jpg"]
+                          price:
+                            type: number
+                            description: Price of the activity.
+                            example: 150.00
         '400':
-          description: Bad request. Missing or invalid query.
+          description: Invalid or missing query.
           content:
             application/json:
               schema:
@@ -112,5 +149,5 @@ paths:
                       properties:
                         message:
                           type: string
-                          description: The error message.
+                          description: Error message.
                           example: "Invalid GraphQL query."

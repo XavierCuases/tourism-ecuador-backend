@@ -4,8 +4,11 @@ type Query {
 }
 
 type Activity {
-  id: ID!
+  _id: ID!
   name: String!
   location: String!
   date: String!
+  description: String
+  photos: [String]
+  price: Float
 }

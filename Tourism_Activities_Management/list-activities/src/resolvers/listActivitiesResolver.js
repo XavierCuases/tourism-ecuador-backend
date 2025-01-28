@@ -1,42 +1,35 @@
-const dynamoDBClient = require('../database/dynamoDBClient');
+const mongoose = require('mongoose'); // Import Mongoose
+const Activity = require('../models/ActivitySchema'); // Import the Mongoose model
 
 module.exports = {
   Query: {
-    
     listActivities: async () => {
-      const params = {
-        TableName: 'Activities',
-      };
-
-      const result = await dynamoDBClient.scan(params).promise();
-      return result.Items.map((item) => ({
-        id: item.id,
-        name: item.name,
-        location: item.location,
-        date: item.date,
-      }));
-    },
-
-    
-    getActivityById: async (_, { id }) => {
-      const params = {
-        TableName: 'Activities',
-        Key: {
-          id, 
-        },
-      };
-
-      const result = await dynamoDBClient.get(params).promise();
-      if (!result.Item) {
-        throw new Error(`No activity found with ID: ${id}`);
+      try {
+        const activities = await Activity.find(); // Fetch all activities
+        return activities;
+      } catch (error) {
+        console.error('❌ Error fetching activities:', error.message);
+        throw new Error('Failed to fetch activities from the database');
       }
+    },
+    getActivityById: async (_, { id }) => {
+      try {
+        // Validate if the provided ID is a valid ObjectId
+        if (!mongoose.isValidObjectId(id)) {
+          throw new Error(`Invalid ID format: ${id}`);
+        }
 
-      return {
-        id: result.Item.id,
-        name: result.Item.name,
-        location: result.Item.location,
-        date: result.Item.date,
-      };
+        // Fetch activity by ID
+        const activity = await Activity.findById(id);
+        if (!activity) {
+          throw new Error(`Activity with ID ${id} not found`);
+        }
+
+        return activity;
+      } catch (error) {
+        console.error(`❌ Error fetching activity by ID: ${error.message}`);
+        throw new Error(error.message);
+      }
     },
   },
 };
