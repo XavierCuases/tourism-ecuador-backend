@@ -2,13 +2,23 @@ type Query {
   _empty: String
 }
 
-type Mutation {
-  createActivity(name: String!, location: String!, date: String!): Activity
-}
-
 type Activity {
   _id: ID!
   name: String!
   location: String!
   date: String!
+  description: String
+  photos: [String]
+  price: Float
+}
+
+type Mutation {
+  createActivity(
+    name: String!
+    location: String!
+    date: String!
+    description: String
+    photos: [String]
+    price: Float
+  ): Activity
 }

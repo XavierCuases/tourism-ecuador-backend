@@ -5,9 +5,11 @@ const validateActivity = require('../utils/validateActivity');
  * @swagger
  * /graphql:
  *   post:
- *     summary: Execute the GraphQL mutation to create an activity
- *     tags: [GraphQL]
- *     description: Use this endpoint to send a GraphQL mutation for creating a new activity. The mutation must be sent in the `query` field of the JSON body.
+ *     summary: Create a new activity using GraphQL
+ *     tags: [Activities]
+ *     description: |
+ *       This endpoint allows you to create a new activity by sending a GraphQL mutation.
+ *       The request must contain a valid mutation inside the `query` field of the JSON body.
  *     requestBody:
  *       required: true
  *       content:
@@ -20,16 +22,26 @@ const validateActivity = require('../utils/validateActivity');
  *                 description: The GraphQL mutation for creating an activity.
  *                 example: |
  *                   mutation {
- *                     createActivity(name: "Cascada de Peguche", location: "Otavalo", date: "2025-01-26") {
+ *                     createActivity(
+ *                       name: "Cascada de Peguche"
+ *                       location: "Otavalo"
+ *                       date: "2025-01-26"
+ *                       description: "A beautiful waterfall in Otavalo."
+ *                       photos: ["https://example.com/photo1.jpg", "https://example.com/photo2.jpg"]
+ *                       price: 25.50
+ *                     ) {
  *                       _id
  *                       name
  *                       location
  *                       date
+ *                       description
+ *                       photos
+ *                       price
  *                     }
  *                   }
  *     responses:
  *       200:
- *         description: The activity was successfully created.
+ *         description: Activity created successfully.
  *         content:
  *           application/json:
  *             schema:
@@ -43,23 +55,38 @@ const validateActivity = require('../utils/validateActivity');
  *                       properties:
  *                         _id:
  *                           type: string
- *                           description: The ID of the created activity.
+ *                           description: Unique identifier for the activity.
  *                           example: "64c12345abcde1234567890f"
  *                         name:
  *                           type: string
- *                           description: The name of the activity.
- *                           example: Cascada de Peguche
+ *                           description: Name of the activity.
+ *                           example: "Cascada de Peguche"
  *                         location:
  *                           type: string
- *                           description: The location of the activity.
- *                           example: Otavalo
+ *                           description: Location of the activity.
+ *                           example: "Otavalo"
  *                         date:
  *                           type: string
  *                           format: date
- *                           description: The date of the activity.
- *                           example: 2025-01-26
+ *                           description: Date when the activity takes place.
+ *                           example: "2025-01-26"
+ *                         description:
+ *                           type: string
+ *                           description: Short description of the activity.
+ *                           example: "A beautiful waterfall in Otavalo."
+ *                         photos:
+ *                           type: array
+ *                           items:
+ *                             type: string
+ *                             format: uri
+ *                           description: List of image URLs representing the activity.
+ *                           example: ["https://example.com/photo1.jpg", "https://example.com/photo2.jpg"]
+ *                         price:
+ *                           type: number
+ *                           description: Cost of the activity.
+ *                           example: 25.50
  *       400:
- *         description: Bad request. Missing or invalid fields in the mutation.
+ *         description: Bad request. Some fields are missing or contain invalid values.
  *         content:
  *           application/json:
  *             schema:
@@ -72,31 +99,37 @@ const validateActivity = require('../utils/validateActivity');
  *                     properties:
  *                       message:
  *                         type: string
- *                         description: The error message.
- *                         example: "All fields (name, location, date) are required."
+ *                         description: Error message.
+ *                         example: "Missing required fields: name, location, date"
  */
+
+
 
 module.exports = {
   Mutation: {
-    createActivity: async (_, { name, location, date }) => {
-      // Validate input fields
-      validateActivity(name, location, date);
-
+    createActivity: async (_, { name, location, date, description, photos, price }) => {
       try {
-        // Log the incoming data for debugging purposes
-        console.log('Creating activity:', { name, location, date });
+        // Validate input fields (ensures required fields are present)
+        validateActivity(name, location, date, price);
 
-        // Create and save the activity document
-        const activity = new Activity({ name, location, date });
+        // Create a new activity document
+        const activity = new Activity({
+          name,
+          location,
+          date,
+          description, // Optional
+          photos, // Optional
+          price, // Optional but validated
+        });
+
+        // Save the activity to MongoDB
         const savedActivity = await activity.save();
-
-        console.log('Activity successfully saved:', savedActivity);
 
         // Return the saved activity
         return savedActivity;
       } catch (error) {
-        console.error('Error saving activity:', error.message);
-        throw new Error('Failed to save activity to the database.');
+        console.error('❌ Validation or creation error:', error.message);
+        throw new Error(error.message);
       }
     },
   },

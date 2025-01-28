@@ -1,12 +1,13 @@
-FROM node:16
 
-WORKDIR /usr/src/app
+FROM node:18-alpine
 
-COPY package*.json ./
+WORKDIR /app
+
+COPY package.json package-lock.json ./
 RUN npm install
 
 COPY . .
 
 EXPOSE 4001
 
-CMD ["node", "src/index.js"]
+CMD ["npm", "run", "dev"]
