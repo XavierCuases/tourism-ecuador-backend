@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  title: List Activities Microservice
+  title: List Activities Microservice in Graphql
   version: 1.0.0
   description: API documentation for listing activities and retrieving activity details by ID.
 servers:
