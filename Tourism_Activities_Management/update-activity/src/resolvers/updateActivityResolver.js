@@ -1,45 +1,36 @@
-const dynamoDBClient = require('../database/dynamoDBClient');
+const Activity = require('../models/ActivitySchema'); 
 const validateUpdateFields = require('../utils/validateUpdateFields'); 
 module.exports = {
   Mutation: {
-    updateActivity: async (_, { id, name, location, date }) => {
-     
-      validateUpdateFields(name, location, date);
+    updateActivity: async (_, { id, name, location, date, description, photos, price }) => {
+      
+      validateUpdateFields(name, location, date, description, photos, price);
 
-      const getParams = {
-        TableName: 'Activities',
-        Key: { id },
-      };
-
-      const existingItem = await dynamoDBClient.get(getParams).promise();
-      if (!existingItem.Item) {
-        throw new Error(`No activity found with ID: ${id}`); 
+      
+      if (!id) {
+        throw new Error('A valid ID is required to update an activity.');
       }
 
-    
-      const updateParams = {
-        TableName: 'Activities',
-        Key: { id },
-        UpdateExpression: `
-          SET ${name ? '#n = :name,' : ''}
-              ${location ? '#l = :location,' : ''}
-              ${date ? '#d = :date,' : ''}
-          `.replace(/,\s*$/, ''),
-        ExpressionAttributeNames: {
-          ...(name && { '#n': 'name' }),
-          ...(location && { '#l': 'location' }),
-          ...(date && { '#d': 'date' }),
-        },
-        ExpressionAttributeValues: {
-          ...(name && { ':name': name }),
-          ...(location && { ':location': location }),
-          ...(date && { ':date': date }),
-        },
-        ReturnValues: 'ALL_NEW',
-      };
+      const existingActivity = await Activity.findById(id);
+      if (!existingActivity) {
+        throw new Error(`No activity found with ID: ${id}`);
+      }
 
-      const result = await dynamoDBClient.update(updateParams).promise();
-      return result.Attributes; 
+      const updateFields = {};
+      if (name) updateFields.name = name;
+      if (location) updateFields.location = location;
+      if (date) updateFields.date = date;
+      if (description) updateFields.description = description;
+      if (photos) updateFields.photos = photos;
+      if (price) updateFields.price = price;
+
+     
+      const updatedActivity = await Activity.findByIdAndUpdate(id, updateFields, {
+        new: true, 
+        runValidators: true, 
+      });
+
+      return updatedActivity; 
     },
   },
 };

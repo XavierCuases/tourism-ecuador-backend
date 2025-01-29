@@ -1,0 +1,111 @@
+openapi: 3.0.0
+info:
+  title: Update Activity API 
+  version: 1.0.0
+  description: |
+    This API allows you to update activity details in a MongoDB database using GraphQL.
+    Supported fields include:
+    - `name`
+    - `location`
+    - `date`
+    - `description`
+    - `photos` (array of valid URLs)
+    - `price` (must be a positive number)
+
+servers:
+  - url: http://localhost:4004
+
+paths:
+  /graphql:
+    post:
+      summary: Update activity details
+      tags:
+        - Activities
+      description: |
+        Send a GraphQL mutation to update activity fields. The mutation requires a valid activity ID and at least one field to update.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                query:
+                  type: string
+                  description: The GraphQL mutation for updating an activity.
+                  example: |
+                    mutation {
+                      updateActivity(
+                        id: "64c12345abcde1234567890f"
+                        name: "Updated Name"
+                        location: "Updated Location"
+                        date: "2025-01-01"
+                        description: "Updated activity description"
+                        photos: ["https://example.com/photo1.jpg", "https://example.com/photo2.jpg"]
+                        price: 50.99
+                      ) {
+                        _id
+                        name
+                        location
+                        date
+                        description
+                        photos
+                        price
+                      }
+                    }
+      responses:
+        '200':
+          description: Activity updated successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      updateActivity:
+                        type: object
+                        properties:
+                          _id:
+                            type: string
+                            description: Unique identifier of the activity.
+                          name:
+                            type: string
+                            description: Updated name of the activity.
+                          location:
+                            type: string
+                            description: Updated location of the activity.
+                          date:
+                            type: string
+                            format: date
+                            description: Updated date of the activity.
+                          description:
+                            type: string
+                            description: Updated description of the activity.
+                          photos:
+                            type: array
+                            items:
+                              type: string
+                              format: uri
+                              description: URLs of the updated photos.
+                          price:
+                            type: number
+                            format: float
+                            description: Updated price of the activity.
+        '400':
+          description: Validation error. The request contains invalid fields or missing data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        message:
+                          type: string
+                          description: Detailed error message.
+                          example: "At least one field must be provided to update (name, location, date, description, photos, price)."
