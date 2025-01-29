@@ -1,6 +1,6 @@
 module.exports = function validateId(id) {
     if (!id || id.trim() === "") {
-      throw new Error("El ID es obligatorio y no puede estar vacío.");
+      throw new Error("The ID is required and cannot be empty.");
     }
   };
   

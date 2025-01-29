@@ -1,0 +1,87 @@
+paths:
+  /graphql:
+    post:
+      summary: Delete an activity
+      tags:
+        - Activities
+      description: |
+        Send a GraphQL mutation to delete an activity by its ID.
+        - The `id` must be a valid MongoDB ObjectId.
+        - If the activity is not found, an error will be returned.
+        - If the `id` is invalid or missing, the request will fail.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                query:
+                  type: string
+                  description: The GraphQL mutation to delete an activity.
+                  example: |
+                    mutation {
+                      deleteActivity(id: "64c12345abcde1234567890f") {
+                        _id
+                        name
+                        location
+                      }
+                    }
+      responses:
+        '200':
+          description: Activity successfully deleted.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      deleteActivity:
+                        type: object
+                        properties:
+                          _id:
+                            type: string
+                            description: Unique identifier of the deleted activity.
+                            example: "64c12345abcde1234567890f"
+                          name:
+                            type: string
+                            description: Name of the deleted activity.
+                            example: "Hiking Adventure"
+                          location:
+                            type: string
+                            description: Location of the deleted activity.
+                            example: "Mountain Trails"
+        '400':
+          description: Bad request. Validation error or missing ID.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        message:
+                          type: string
+                          description: Error details.
+                          example: "A valid ID is required to delete an activity."
+        '404':
+          description: Activity not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        message:
+                          type: string
+                          description: Error details.
+                          example: "No activity found with ID: 64c12345abcde1234567890f"

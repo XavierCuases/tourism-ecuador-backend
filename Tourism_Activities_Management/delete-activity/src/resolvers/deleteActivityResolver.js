@@ -1,29 +1,25 @@
-const dynamoDBClient = require('../database/dynamoDBClient');
-const validateId = require('../utils/validateId'); 
+const Activity = require('../models/ActivitySchema'); 
+const validateId = require('../utils/validateID'); 
 
 module.exports = {
   Mutation: {
     deleteActivity: async (_, { id }) => {
-  
-      validateId(id);
+      try {
+        
+        validateId(id);
 
-      const getParams = {
-        TableName: 'Activities',
-        Key: { id },
-      };
+        const activity = await Activity.findById(id);
+        if (!activity) {
+          throw new Error(`No activity found with ID: ${id}`);
+        }
 
-      const existingItem = await dynamoDBClient.get(getParams).promise();
-      if (!existingItem.Item) {
-        throw new Error(`No activity found with ID: ${id}`);
+        const deletedActivity = await Activity.findByIdAndDelete(id);
+
+        return deletedActivity; 
+      } catch (error) {
+        console.error(`Error deleting activity: ${error.message}`);
+        throw new Error(error.message); 
       }
-
-      const deleteParams = {
-        TableName: 'Activities',
-        Key: { id },
-      };
-
-      await dynamoDBClient.delete(deleteParams).promise();
-      return `Activity with ID: ${id} was successfully deleted.`;
     },
   },
 };
