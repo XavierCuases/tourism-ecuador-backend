@@ -17,6 +17,7 @@
     "graphql": "^15.8.0",
     "graphql-import-node": "^0.0.5",
     "mongoose": "^8.9.5",
+    "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
     "uuid": "^11.0.5",
     "yamljs": "^0.3.0"

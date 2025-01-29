@@ -1,28 +1,13 @@
-openapi: 3.0.0
-info:
-  title: Update Activity API 
-  version: 1.0.0
-  description: |
-    This API allows you to update activity details in a MongoDB database using GraphQL.
-    Supported fields include:
-    - `name`
-    - `location`
-    - `date`
-    - `description`
-    - `photos` (array of valid URLs)
-    - `price` (must be a positive number)
-
-servers:
-  - url: http://localhost:4004
-
 paths:
   /graphql:
     post:
-      summary: Update activity details
+      summary: Update an existing activity
       tags:
         - Activities
       description: |
-        Send a GraphQL mutation to update activity fields. The mutation requires a valid activity ID and at least one field to update.
+        Send a GraphQL mutation to update an existing activity in the database.
+        - The `id` of the activity must be provided.
+        - Any field (`name`, `location`, `date`, `description`, `photos`, `price`) can be updated.
       requestBody:
         required: true
         content:
@@ -32,17 +17,14 @@ paths:
               properties:
                 query:
                   type: string
-                  description: The GraphQL mutation for updating an activity.
+                  description: The GraphQL mutation to update an activity.
                   example: |
                     mutation {
                       updateActivity(
-                        id: "64c12345abcde1234567890f"
-                        name: "Updated Name"
-                        location: "Updated Location"
-                        date: "2025-01-01"
-                        description: "Updated activity description"
-                        photos: ["https://example.com/photo1.jpg", "https://example.com/photo2.jpg"]
-                        price: 50.99
+                        id: "64c12345abcde1234567890f",
+                        name: "Updated Activity Name",
+                        description: "Updated description",
+                        price: 99.99
                       ) {
                         _id
                         name
@@ -69,32 +51,37 @@ paths:
                         properties:
                           _id:
                             type: string
-                            description: Unique identifier of the activity.
+                            description: Unique identifier of the updated activity.
+                            example: "64c12345abcde1234567890f"
                           name:
                             type: string
                             description: Updated name of the activity.
+                            example: "Updated Activity Name"
                           location:
                             type: string
                             description: Updated location of the activity.
+                            example: "Updated Location"
                           date:
                             type: string
                             format: date
                             description: Updated date of the activity.
+                            example: "2025-01-01"
                           description:
                             type: string
                             description: Updated description of the activity.
+                            example: "Updated description."
                           photos:
                             type: array
                             items:
                               type: string
                               format: uri
-                              description: URLs of the updated photos.
+                              description: URLs of updated activity photos.
                           price:
                             type: number
-                            format: float
                             description: Updated price of the activity.
+                            example: 99.99
         '400':
-          description: Validation error. The request contains invalid fields or missing data.
+          description: Bad request. Validation error or missing required fields.
           content:
             application/json:
               schema:
@@ -107,5 +94,5 @@ paths:
                       properties:
                         message:
                           type: string
-                          description: Detailed error message.
-                          example: "At least one field must be provided to update (name, location, date, description, photos, price)."
+                          description: Error message.
+                          example: "A valid ID is required to update an activity."
