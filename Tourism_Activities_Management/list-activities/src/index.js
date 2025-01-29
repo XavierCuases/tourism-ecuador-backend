@@ -1,18 +1,17 @@
-require("graphql-import-node");
-const express = require("express");
-const { ApolloServer } = require("apollo-server-express");
-const cors = require("cors");
-const morgan = require("morgan");
-const configureSwagger = require("./swagger");
+require('graphql-import-node');
+const express = require('express');
+const { ApolloServer } = require('apollo-server-express');
 const connectDB = require('./database/mongoDBClient');
-const typeDefs = require("./schema/listActivitiesSchema.graphql");
-const resolvers = require("./resolvers/listActivitiesResolver"); 
+const typeDefs = require('./schema/listActivitiesSchema.graphql');
+const resolvers = require('./resolvers/listActivitiesResolver');
+const configureSwagger = require('./swagger'); // Importar Swagger
+require('dotenv').config();
 
 const app = express();
-connectDB();
-app.use(cors());
 
-//app.use(morgan("dev"));
+connectDB();
+
+configureSwagger(app);
 
 const server = new ApolloServer({
   typeDefs,
@@ -20,24 +19,15 @@ const server = new ApolloServer({
 });
 
 server.start().then(() => {
-  
   server.applyMiddleware({ app });
 
-  configureSwagger(app);
-
-  app.get("/", (req, res) => {
-    res.send("List activities microservice is running");
-  });
-
-  app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).send("Something went wrong!");
+  app.get('/', (req, res) => {
+    res.send('List activities microservice is running');
   });
 
   const PORT = process.env.PORT || 4003;
-
   app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}/graphql`);
-    console.log(`Swagger available at http://localhost:${PORT}/api-docs`);
+    console.log(`Server running at http://localhost:${PORT}/graphql`);
+    console.log(`Swagger documentation available at http://localhost:${PORT}/api-docs`);
   });
 });
