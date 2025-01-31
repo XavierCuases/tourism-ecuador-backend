@@ -3,40 +3,41 @@ name: CI Pipeline
 on:
   push:
     branches:
-      - "QA"  # Se ejecuta cuando haces un push a la rama QA
+      - "QA"
     paths:
-      - "Tourism_Activities_Management/**"  # Asegúrate de que el código relevante cambie
+      - "Tourism_Activities_Management/**"
   pull_request:
     branches:
-      - "main"  # Se ejecuta cuando hay un pull request hacia la rama main
-    paths:
-      - "Tourism_Activities_Management/**"  # Asegúrate de que el código relevante cambie
+      - "main"
 
 jobs:
   build:
-    runs-on: ubuntu-latest  # Usamos un runner de Ubuntu
+    runs-on: ubuntu-latest
 
     steps:
-      # Paso 1: Clonar el repositorio
+      # Paso 1: Checkout del código
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Paso 2: Iniciar sesión en Docker Hub
+      # Paso 2: Login a Docker Hub
       - name: Login Docker Hub
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
 
-      # Paso 3: Construir las imágenes Docker para cada microservicio
+      # Paso 3: Construir las imágenes Docker
       - name: Build Docker images
         run: |
+          docker pull ${{ secrets.DOCKER_USERNAME }}/mongo-database:latest  # No necesitamos reconstruir MongoDB
+          
+          # Construir los microservicios
           docker build -t ${{ secrets.DOCKER_USERNAME }}/create-activity:latest -f Tourism_Activities_Management/create-activity/Dockerfile .
           docker build -t ${{ secrets.DOCKER_USERNAME }}/list-activities:latest -f Tourism_Activities_Management/list-activities/Dockerfile .
           docker build -t ${{ secrets.DOCKER_USERNAME }}/update-activity:latest -f Tourism_Activities_Management/update-activity/Dockerfile .
           docker build -t ${{ secrets.DOCKER_USERNAME }}/delete-activity:latest -f Tourism_Activities_Management/delete-activity/Dockerfile .
 
-      # Paso 4: Subir las imágenes a Docker Hub
+      # Paso 4: Push a Docker Hub
       - name: Push Docker images to Docker Hub
         run: |
           docker push ${{ secrets.DOCKER_USERNAME }}/create-activity:latest
