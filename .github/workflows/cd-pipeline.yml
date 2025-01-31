@@ -2,73 +2,42 @@ name: CD Pipeline
 
 on:
   workflow_run:
-    workflows: ["CI Pipeline"]
+    workflows: ["CI Pipeline"]  # Este pipeline se ejecuta después de que el CI Pipeline termine correctamente
     types:
       - completed
 
 jobs:
-
   deploy:
-    runs-on: ubuntu-latest
-
+    runs-on: self-hosted  # Usamos un runner auto-hospedado (puede ser una instancia EC2 o cualquier servidor)
+    
     steps:
-      - name: Configurar clave SSH para EC2
-        env:
-          AWS_PRIVATE_KEY: ${{ secrets.AWS_PRIVATE_KEY }}
-          AWS_HOST: ${{ secrets.AWS_HOST }}
-          AWS_USER: ubuntu
+      # Paso 1: Descargar las imágenes Docker desde Docker Hub
+      - name: Pull Docker images
         run: |
-          echo "$AWS_PRIVATE_KEY" > clave4.pem
-          chmod 600 clave4.pem
+          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/mongo-database:latest
+          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/create-activity:latest
+          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/list-activities:latest
+          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/update-activity:latest
+          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/delete-activity:latest
 
-      - name: Debug AWS Private Key
+      # Paso 2: Eliminar contenedores antiguos si existen
+      - name: Delete old Docker containers
         run: |
-          echo "Verificando clave privada..."
-          ls -l clave4.pem
+          sudo docker rm -f mongodb_container || true
+          sudo docker rm -f create-activity || true
+          sudo docker rm -f list-activities || true
+          sudo docker rm -f update-activity || true
+          sudo docker rm -f delete-activity || true
 
-          - name: Instalar Docker en EC2 (solo si no está instalado)
-          run: |
-            ssh -i clave4.pem $AWS_USER@$AWS_HOST << 'EOF'
-              if ! command -v docker &> /dev/null
-              then
-                echo "Docker no está instalado. Instalando..."
-                sudo apt update
-                sudo apt install -y docker.io
-                sudo systemctl start docker
-                sudo systemctl enable docker
-              else
-                echo "Docker ya está instalado. Saltando instalación."
-              fi
-            EOF
-        
-
-      - name: Desplegar MongoDB y microservicios en EC2
+      # Paso 3: Levantar MongoDB
+      - name: Run MongoDB Container
         run: |
-          ssh -i clave4.pem $AWS_USER@$AWS_HOST << 'EOF'
-            docker pull ${{ secrets.DOCKER_USERNAME }}/mongo-database:latest
-            docker pull ${{ secrets.DOCKER_USERNAME }}/create-activity:latest
-            docker pull ${{ secrets.DOCKER_USERNAME }}/list-activities:latest
-            docker pull ${{ secrets.DOCKER_USERNAME }}/update-activity:latest
-            docker pull ${{ secrets.DOCKER_USERNAME }}/delete-activity:latest
+          sudo docker run -d --name mongodb_container -p 27017:27017 ${{ secrets.DOCKER_USERNAME }}/mongo-database:latest
 
-            docker stop mongodb_container || true
-            docker stop create-activity || true
-            docker stop list-activities || true
-            docker stop update-activity || true
-            docker stop delete-activity || true
-
-            docker rm mongodb_container || true
-            docker rm create-activity || true
-            docker rm list-activities || true
-            docker rm update-activity || true
-            docker rm delete-activity || true
-
-            docker run -d --name mongodb_container -p 27017:27017 -v mongo_data:/data/db ${{ secrets.DOCKER_USERNAME }}/mongo-database:latest
-            docker run -d --name create-activity -p 4001:4001 --env MONGO_URI=mongodb://mongodb_container:27017/ActivitiesDB --network=host ${{ secrets.DOCKER_USERNAME }}/create-activity:latest
-
-            docker run -d --name list-activities -p 4003:4003 --env MONGO_URI=mongodb://mongodb_container:27017/ActivitiesDB --network=host ${{ secrets.DOCKER_USERNAME }}/list-activities:latest
-
-            docker run -d --name update-activity -p 4004:4004 --env MONGO_URI=mongodb://mongodb_container:27017/ActivitiesDB --network=host ${{ secrets.DOCKER_USERNAME }}/update-activity:latest
-
-            docker run -d --name delete-activity -p 4005:4005 --env MONGO_URI=mongodb://mongodb_container:27017/ActivitiesDB --network=host ${{ secrets.DOCKER_USERNAME }}/delete-activity:latest
-          EOF
+      # Paso 4: Levantar microservicios
+      - name: Run Microservices
+        run: |
+          sudo docker run -d --name create-activity -p 4001:4001 --env MONGO_URI=mongodb://mongodb_container:27017/ActivitiesDB --network=host ${{ secrets.DOCKER_USERNAME }}/create-activity:latest
+          sudo docker run -d --name list-activities -p 4003:4003 --env MONGO_URI=mongodb://mongodb_container:27017/ActivitiesDB --network=host ${{ secrets.DOCKER_USERNAME }}/list-activities:latest
+          sudo docker run -d --name update-activity -p 4004:4004 --env MONGO_URI=mongodb://mongodb_container:27017/ActivitiesDB --network=host ${{ secrets.DOCKER_USERNAME }}/update-activity:latest
+          sudo docker run -d --name delete-activity -p 4005:4005 --env MONGO_URI=mongodb://mongodb_container:27017/ActivitiesDB --network=host ${{ secrets.DOCKER_USERNAME }}/delete-activity:latest
