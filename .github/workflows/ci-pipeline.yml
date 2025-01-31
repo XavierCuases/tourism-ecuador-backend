@@ -2,45 +2,42 @@ name: CI Pipeline
 
 on:
   push:
-    branches:
+    branches: 
       - "QA"
     paths:
       - "Tourism_Activities_Management/**"
   pull_request:
     branches:
-      - "main"
+      - "main" 
 
 jobs:
-  build:
+
+  build-and-push:
     runs-on: ubuntu-latest
 
     steps:
-      # Paso 1: Checkout del código
-      - name: Checkout repository
-        uses: actions/checkout@v3
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-      # Paso 2: Login a Docker Hub
-      - name: Login Docker Hub
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+    - name: Login to Docker Hub
+      env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
 
-      # Paso 3: Construir las imágenes Docker
-      - name: Build Docker images
-        run: |
-          docker pull ${{ secrets.DOCKER_USERNAME }}/mongo-database:latest  # No necesitamos reconstruir MongoDB
-          
-          # Construir los microservicios
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/create-activity:latest -f Tourism_Activities_Management/create-activity/Dockerfile .
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/list-activities:latest -f Tourism_Activities_Management/list-activities/Dockerfile .
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/update-activity:latest -f Tourism_Activities_Management/update-activity/Dockerfile .
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/delete-activity:latest -f Tourism_Activities_Management/delete-activity/Dockerfile .
+    - name: Build Docker images
+      run: |
+        docker pull ${{ secrets.DOCKER_USERNAME }}/mongo-database:latest  # No necesitamos reconstruir MongoDB
 
-      # Paso 4: Push a Docker Hub
-      - name: Push Docker images to Docker Hub
-        run: |
-          docker push ${{ secrets.DOCKER_USERNAME }}/create-activity:latest
-          docker push ${{ secrets.DOCKER_USERNAME }}/list-activities:latest
-          docker push ${{ secrets.DOCKER_USERNAME }}/update-activity:latest
-          docker push ${{ secrets.DOCKER_USERNAME }}/delete-activity:latest
+        # Construcción de los microservicios con el contexto correcto
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/create-activity:latest -f Tourism_Activities_Management/create-activity/Dockerfile Tourism_Activities_Management/create-activity/
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/list-activities:latest -f Tourism_Activities_Management/list-activities/Dockerfile Tourism_Activities_Management/list-activities/
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/update-activity:latest -f Tourism_Activities_Management/update-activity/Dockerfile Tourism_Activities_Management/update-activity/
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/delete-activity:latest -f Tourism_Activities_Management/delete-activity/Dockerfile Tourism_Activities_Management/delete-activity/
+
+    - name: Push Docker images to Docker Hub
+      run: |
+        docker push ${{ secrets.DOCKER_USERNAME }}/create-activity:latest
+        docker push ${{ secrets.DOCKER_USERNAME }}/list-activities:latest
+        docker push ${{ secrets.DOCKER_USERNAME }}/update-activity:latest
+        docker push ${{ secrets.DOCKER_USERNAME }}/delete-activity:latest
