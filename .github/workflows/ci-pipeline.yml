@@ -26,7 +26,7 @@ jobs:
 
       - name: Build Docker images
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/mongo-database:latest -f Dockerfile-mongo .
+          docker pull ${{ secrets.DOCKER_USERNAME }}/mongo-database:latest  # No necesitamos reconstruir MongoDB
           docker build -t ${{ secrets.DOCKER_USERNAME }}/create-activity:latest -f Tourism_Activities_Management/create-activity/Dockerfile .
           docker build -t ${{ secrets.DOCKER_USERNAME }}/list-activities:latest -f Tourism_Activities_Management/list-activities/Dockerfile .
           docker build -t ${{ secrets.DOCKER_USERNAME }}/update-activity:latest -f Tourism_Activities_Management/update-activity/Dockerfile .
@@ -34,7 +34,6 @@ jobs:
 
       - name: Push Docker images to Docker Hub
         run: |
-          docker push ${{ secrets.DOCKER_USERNAME }}/mongo-database:latest
           docker push ${{ secrets.DOCKER_USERNAME }}/create-activity:latest
           docker push ${{ secrets.DOCKER_USERNAME }}/list-activities:latest
           docker push ${{ secrets.DOCKER_USERNAME }}/update-activity:latest
