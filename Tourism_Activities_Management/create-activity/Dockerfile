@@ -5,6 +5,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 
 RUN npm install --only=production
+RUN ls -l
 
 COPY . .
 
