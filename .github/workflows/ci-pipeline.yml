@@ -2,13 +2,13 @@ name: CI Pipeline
 
 on:
   push:
-    branches: ["QA"]
+    branches:
+      - "QA"  
     paths:
-      - "Tourism_Activities_Management/**"  
+      - "Tourism_Activities_Management/**"
   pull_request:
-    branches: ["main"]
-    paths:
-      - "Tourism_Activities_Management/**"  
+    branches:
+      - "main" 
 
 jobs:
   build-and-push:
