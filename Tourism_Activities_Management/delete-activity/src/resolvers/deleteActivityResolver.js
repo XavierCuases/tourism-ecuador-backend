@@ -1,12 +1,12 @@
 const Activity = require('../models/ActivitySchema'); 
-const validateId = require('../utils/validateID'); 
+const validateID = require('../utils/validateIde'); 
 
 module.exports = {
   Mutation: {
     deleteActivity: async (_, { id }) => {
       try {
         
-        validateId(id);
+        validateID(id);
 
         const activity = await Activity.findById(id);
         if (!activity) {

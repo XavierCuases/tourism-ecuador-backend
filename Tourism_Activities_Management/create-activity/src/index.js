@@ -2,7 +2,7 @@ require('graphql-import-node');
 const express = require('express');
 const { ApolloServer } = require('apollo-server-express');
 const connectDB = require('./database/mongoDBClient'); 
-const typeDefs = require('./schema/ActivitySchema.graphql');
+const typeDefs = require('./schema/activitySchema.graphql');
 const resolvers = require('./resolvers/createActivityResolver');
 const configureSwagger = require('./swagger'); 
 require('dotenv').config();
