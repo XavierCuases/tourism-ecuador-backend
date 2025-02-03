@@ -1,8 +1,8 @@
-const app = require('./src/app'); // Importa app.js desde src
-const sequelize = require('./src/config/database'); // Conexión a la base de datos
+const app = require('./src/app'); 
+const sequelize = require('./src/config/database');  
 
-// Sync database and start the server
-sequelize.sync({ alter: true }) // Ajusta la base de datos según los modelos
+
+sequelize.sync({ alter: true }) 
     .then(() => {
         console.log('Database synchronized');
         const PORT = process.env.PORT || 3001;
