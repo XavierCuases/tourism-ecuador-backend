@@ -1,9 +1,9 @@
-from src.config.db import Neo4jConnection
+from src.config.db import Neo4jConnection 
 
 def get_recommendations(user_id):
     query = """
-    MATCH (user:User {id: $user_id})-[:INTERACTED_WITH]->(activity:Activity)
-    RETURN activity.name AS activity, COUNT(*) AS interactionCount
+    MATCH (user:User {id: $user_id})-[r:INTERACTED_WITH]->(activity:Activity)
+    RETURN activity.name AS activity, SUM(r.count) AS interactionCount
     ORDER BY interactionCount DESC
     LIMIT 5
     """
