@@ -6,7 +6,7 @@ const ActivitySchema = new mongoose.Schema({
   location: { type: String, required: true },
   date: { type: String, required: true },
   description: { type: String },
-  photos: { type: [String] },
+  photos: { type: [String], default: [] }, // Establece un valor predeterminado vacío
   price: { type: Number },
 });
 

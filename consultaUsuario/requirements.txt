@@ -1,7 +1,0 @@
-Flask
-Flask-CORS
-Flask-SQLAlchemy
-Flask-Migrate
-PyJWT
-python-dotenv
-psycopg2-binary

@@ -1,4 +1,4 @@
-const mongoose = require('mongoose'); // Import Mongoose
+const mongoose = require('mongoose');
 const Activity = require('../models/ActivitySchema'); // Import the Mongoose model
 
 module.exports = {
@@ -6,7 +6,8 @@ module.exports = {
     listActivities: async () => {
       try {
         const activities = await Activity.find(); // Fetch all activities
-        return activities;
+        // Si no se encuentran actividades, retornamos una lista vacía
+        return activities || [];
       } catch (error) {
         console.error('❌ Error fetching activities:', error.message);
         throw new Error('Failed to fetch activities from the database');
