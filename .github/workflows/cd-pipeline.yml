@@ -51,24 +51,23 @@ jobs:
             docker pull ${{ secrets.DOCKER_USERNAME }}/update-activity:latest
             docker pull ${{ secrets.DOCKER_USERNAME }}/delete-activity:latest
 
-            docker stop mongodb_container || true
             docker stop create-activity || true
             docker stop list-activities || true
             docker stop update-activity || true
             docker stop delete-activity || true
 
-            docker rm mongodb_container || true
             docker rm create-activity || true
             docker rm list-activities || true
             docker rm update-activity || true
             docker rm delete-activity || true
 
-            docker run -d --name mongodb_container -p 27017:27017 -v mongo_data:/data/db ${{ secrets.DOCKER_USERNAME }}/mongo-database:latest
-            docker run -d --name create-activity -p 4001:4001 --env MONGO_URI=mongodb://mongodb_container:27017/ActivitiesDB --network=host ${{ secrets.DOCKER_USERNAME }}/create-activity:latest
+           
+            docker run -d --name create-activity -p 4001:4001 --env MONGO_URI=mongodb://mongodb_container:27017/ActivitiesDB --network=host --restart=always ${{ secrets.DOCKER_USERNAME }}/create-activity:latest
 
-            docker run -d --name list-activities -p 4003:4003 --env MONGO_URI=mongodb://mongodb_container:27017/ActivitiesDB --network=host ${{ secrets.DOCKER_USERNAME }}/list-activities:latest
+            docker run -d --name list-activities -p 4003:4003 --env MONGO_URI=mongodb://mongodb_container:27017/ActivitiesDB --network=host --restart=always ${{ secrets.DOCKER_USERNAME }}/list-activities:latest
 
-            docker run -d --name update-activity -p 4004:4004 --env MONGO_URI=mongodb://mongodb_container:27017/ActivitiesDB --network=host ${{ secrets.DOCKER_USERNAME }}/update-activity:latest
+            docker run -d --name update-activity -p 4004:4004 --env MONGO_URI=mongodb://mongodb_container:27017/ActivitiesDB --network=host --restart=always ${{ secrets.DOCKER_USERNAME }}/update-activity:latest
 
-            docker run -d --name delete-activity -p 4005:4005 --env MONGO_URI=mongodb://mongodb_container:27017/ActivitiesDB --network=host ${{ secrets.DOCKER_USERNAME }}/delete-activity:latest
+            docker run -d --name delete-activity -p 4005:4005 --env MONGO_URI=mongodb://mongodb_container:27017/ActivitiesDB --network=host --restart=always ${{ secrets.DOCKER_USERNAME }}/delete-activity:latest
+
           EOF
