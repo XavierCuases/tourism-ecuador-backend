@@ -1,25 +1,12 @@
 version: '3.8'
 
 services:
+  
   auth-service:
-    build: .
+    build:
+      context: ./auth-service  
+      dockerfile: Dockerfile  
     container_name: auth-service
-    ports:
-      - "3000:3000"  
-    environment:
-      - DB_HOST=users.c20pppmbajcg.us-east-1.rds.amazonaws.com
-      - DB_PORT=5432
-      - DB_USER=postgres
-      - DB_PASSWORD=Federer.-  
-      - DB_NAME=users 
-      - JWT_SECRET=your_jwt_secret_key
-      - ADMIN_TOKEN=supersecreto123
-    depends_on:
-      - db 
-
-  register-service:
-    build: .
-    container_name: register-service
     ports:
       - "3001:3001" 
     environment:
@@ -29,9 +16,20 @@ services:
       - DB_PASSWORD=Federer.-
       - DB_NAME=users  
       - JWT_SECRET=your_jwt_secret_key
-    depends_on:
-      - db  
+      - ADMIN_TOKEN=supersecreto123
 
-volumes:
-  postgres_data:
-    driver: local
+  
+  register-service:
+    build:
+      context: ./register-user-service  
+      dockerfile: Dockerfile       
+    container_name: register-service
+    ports:
+      - "3000:3000"  
+    environment:
+      - DB_HOST=users.c20pppmbajcg.us-east-1.rds.amazonaws.com  
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=Federer.-
+      - DB_NAME=users  
+      - JWT_SECRET=your_jwt_secret_key
