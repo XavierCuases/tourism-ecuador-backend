@@ -1,4 +1,4 @@
-# Tourism Ecuador Backend - User Management Microservice
+# Microservice list Users
 
 This is a **Node.js microservice** for managing users in the **Tourism Ecuador** platform. The service provides functionality for managing user information stored in a **PostgreSQL** database hosted on **AWS RDS**. The microservice supports **listing users**, with the possibility to extend it further to handle other user-related actions (e.g., updating and deleting users).
 

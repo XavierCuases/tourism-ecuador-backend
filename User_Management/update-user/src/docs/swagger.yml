@@ -1,0 +1,96 @@
+swagger: '2.0'
+info:
+  title: User Management API
+  description: This API is part of the **Tourism Ecuador** platform. It handles user management functionalities, including listing, creating, updating, and deleting users in the system.
+  version: "1.0.0"
+  contact:
+    name: Xavier Cuases
+    email: xaviercuases@hotmail.com
+host: localhost:7001
+basePath: /api
+schemes:
+  - http
+paths:
+  /users:
+    get:
+      summary: List all users
+      description: Returns a list of all users stored in the **Tourism Ecuador** platform's database.
+      operationId: listUsers
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Successfully fetched the list of users
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/User'
+        500:
+          description: Internal server error
+
+  /users/{id}:
+    put:
+      summary: Update a user
+      description: Updates the details of a specific user based on the given ID.
+      operationId: updateUser
+      parameters:
+        - name: id
+          in: path
+          description: The ID of the user to update
+          required: true
+          type: integer
+        - name: name
+          in: body
+          description: Name of the user
+          required: true
+          type: string
+        - name: email
+          in: body
+          description: Email of the user
+          required: true
+          type: string
+        - name: password
+          in: body
+          description: Password of the user
+          required: true
+          type: string
+        - name: role
+          in: body
+          description: Role of the user
+          required: true
+          type: string
+      responses:
+        200:
+          description: User updated successfully
+          schema:
+            $ref: '#/definitions/User'
+        404:
+          description: User not found
+        500:
+          description: Internal server error
+
+definitions:
+  User:
+    type: object
+    required:
+      - id
+      - name
+      - email
+      - password
+      - role
+    properties:
+      id:
+        type: integer
+        example: 1
+      name:
+        type: string
+        example: "John Doe"
+      email:
+        type: string
+        example: "john.doe@example.com"
+      password:
+        type: string
+        example: "password123"
+      role:
+        type: string
+        example: "user"
