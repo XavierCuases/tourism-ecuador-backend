@@ -35,9 +35,7 @@ Para conectar el microservicio a tu base de datos PostgreSQL (local o AWS RDS), 
 
 Puedes colocar la configuración directamente en dbConfig.js o usar variables de entorno para los datos sensibles:
 
-javascript
-Copiar
-Editar
+
 require('dotenv').config(); // Cargar las variables de entorno
 
 const { Sequelize } = require('sequelize');
@@ -62,9 +60,6 @@ const sequelize = new Sequelize(
 module.exports = sequelize;
 Asegúrate de tener un archivo .env en la raíz del proyecto con las credenciales de la base de datos:
 
-plaintext
-Copiar
-Editar
 DB_HOST=your-rds-endpoint.amazonaws.com
 DB_PORT=5432
 DB_USER=your-db-user
@@ -77,22 +72,18 @@ bash
 Copiar
 Editar
 npm start
-El servidor correrá en el puerto 7000 por defecto.
+El servidor correrá en el puerto 7001 por defecto.
 
 Acceder a Swagger UI
 Puedes acceder a la documentación interactiva de la API en:
 
-bash
-Copiar
-Editar
+
 http://localhost:7000/api-docs
 Probar la API de Actualización de Usuario en Postman
 Método HTTP: PUT
-URL: http://localhost:7000/api/users/:id (Reemplaza :id con el ID del usuario a actualizar)
+URL: http://localhost:7001/api/users/:id (Reemplaza :id con el ID del usuario a actualizar)
 Cuerpo (raw JSON):
-json
-Copiar
-Editar
+
 {
   "name": "Updated Name",
   "email": "updated.email@example.com",
@@ -124,8 +115,8 @@ docker build -t update-user .
 bash
 Copiar
 Editar
-docker run -p 7000:7000 update-user
-Esto iniciará el servidor dentro de un contenedor Docker y lo hará accesible en http://localhost:7000.
+docker run -p 7001:7001 update-user
+Esto iniciará el servidor dentro de un contenedor Docker y lo hará accesible en http://localhost:7001.
 
 Solución de Problemas
 Si tienes problemas de conexión con la base de datos, verifica lo siguiente:
