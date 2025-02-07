@@ -1,22 +1,27 @@
 const express = require('express');
 const cors = require('cors');
+const swaggerSetup = require('./src/swagger'); 
 const { app, sequelize } = require('./src/app');
+const userRoutes = require('./src/routes/UserRoutes');
 
 const PORT = 3000;
 
-// Configuración básica de CORS
 app.use(cors({
-    origin: 'http://localhost:3000', // Update this to the domain you need
-    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
-    allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
+    origin: 'http://localhost:3000', 
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], 
+    allowedHeaders: ['Content-Type', 'Authorization'], 
 }));
 
-// Connect to the database and start the server
-sequelize.sync({ alter: true }) // Synchronize database structure with models
+app.use('/api/users', userRoutes);
+
+swaggerSetup(app);
+
+sequelize.sync({ alter: true }) 
     .then(() => {
         console.log('Connected database');
         app.listen(PORT, () => {
             console.log(`Server running at http://localhost:${PORT}`);
+            console.log(`Swagger UI is available at http://localhost:${PORT}/api-docs`);
         });
     })
     .catch(error => console.error('Error connecting to the database:', error));
