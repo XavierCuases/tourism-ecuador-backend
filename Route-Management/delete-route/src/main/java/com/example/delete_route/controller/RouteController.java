@@ -1,7 +1,6 @@
-package com.example.create_route.controller;
+package com.example.delete_route.controller;
 
-import com.example.create_route.models.Route;
-import com.example.create_route.service.RouteService;
+import com.example.delete_route.service.RouteService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,10 +14,10 @@ public class RouteController {
         this.routeService = routeService;
     }
 
-    @PostMapping
-    public ResponseEntity<Route> createRoute(@RequestBody Route route) {
-        return ResponseEntity.ok(routeService.createRoute(route));
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteRoute(@PathVariable Long id) {
+        routeService.deleteRoute(id);
+        return ResponseEntity.noContent().build();
     }
-
     
 }
