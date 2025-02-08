@@ -1,4 +1,4 @@
-package com.example.create_route.models;
+package com.example.get_routes.models;
 import jakarta.persistence.*;
 import lombok.*;
 

@@ -1,8 +1,9 @@
-package com.example.create_route.service;
-import com.example.create_route.models.Route;
-import com.example.create_route.repository.RouteRepository;
+package com.example.get_routes.service;
+import com.example.get_routes.models.Route;
+import com.example.get_routes.repository.RouteRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
+
 @Service
 public class RouteService {
 
@@ -14,9 +15,6 @@ public class RouteService {
         this.routeRepository = routeRepository;
     }
 
-    public Route createRoute(Route route) {
-        return routeRepository.save(route);
-    }
 
     public List<Route> getAllRoutes() {
         return routeRepository.findAll();
@@ -24,9 +22,5 @@ public class RouteService {
 
     public Route getRouteById(Long id) {
         return routeRepository.findById(id).orElseThrow(() -> new RuntimeException("Route not found"));
-    }
-
-    public void deleteRoute(Long id) {
-        routeRepository.deleteById(id);
     }
 }
