@@ -23,10 +23,10 @@ public class Route {
     @Column(nullable = false)
     private double distance;
 
-    @Column(nullable = false)
+    @Column(name = "start_point", nullable = false) 
     private String startPoint;
 
-    @Column(nullable = false)
+    @Column(name = "end_point", nullable = false) 
     private String endPoint;
 
     @Column(nullable = false)
