@@ -5,6 +5,6 @@ WORKDIR /app
 
 COPY target/create-route-0.0.1-SNAPSHOT.jar app.jar
 
-EXPOSE ${SERVER_PORT}
+EXPOSE 5005
 
 ENTRYPOINT ["java", "-jar", "app.jar"]

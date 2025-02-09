@@ -3,8 +3,8 @@ FROM openjdk:17-jdk-slim
 
 WORKDIR /app
 
-COPY target/create-route-0.0.1-SNAPSHOT.jar app.jar
+COPY target/update-route-0.0.1-SNAPSHOT.jar app.jar
 
-EXPOSE ${SERVER_PORT}
+EXPOSE 5007
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
