@@ -3,6 +3,7 @@ import com.example.get_routes.models.Route;
 import com.example.get_routes.repository.RouteRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class RouteService {
@@ -21,6 +22,7 @@ public class RouteService {
     }
 
     public Route getRouteById(Long id) {
-        return routeRepository.findById(id).orElseThrow(() -> new RuntimeException("Route not found"));
+        return routeRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("No existe una ruta con ID " + id));
     }
 }

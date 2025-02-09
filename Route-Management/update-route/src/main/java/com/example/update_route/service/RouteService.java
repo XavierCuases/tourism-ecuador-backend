@@ -1,6 +1,9 @@
 package com.example.update_route.service;
 import com.example.update_route.models.Route;
 import com.example.update_route.repository.RouteRepository;
+
+import java.util.NoSuchElementException;
+
 import org.springframework.stereotype.Service;
 @Service
 public class RouteService {
@@ -12,17 +15,17 @@ public class RouteService {
         this.routeRepository = routeRepository;
     }
 
-    public Route updateRoute(Long id, Route updatedRoute) {
+    public Route updateRoute(Long id, Route route) {
         Route existingRoute = routeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Route not found with ID: " + id));
+        .orElseThrow(() -> new NoSuchElementException("No existe la ruta con ID " + id));
 
-        existingRoute.setName(updatedRoute.getName());
-        existingRoute.setDescription(updatedRoute.getDescription());
-        existingRoute.setDistance(updatedRoute.getDistance());
-        existingRoute.setStartPoint(updatedRoute.getStartPoint());
-        existingRoute.setEndPoint(updatedRoute.getEndPoint());
-        existingRoute.setDuration(updatedRoute.getDuration());
+    existingRoute.setName(route.getName());
+    existingRoute.setDescription(route.getDescription());
+    existingRoute.setDistance(route.getDistance());
+    existingRoute.setStartPoint(route.getStartPoint());
+    existingRoute.setEndPoint(route.getEndPoint());
+    existingRoute.setDuration(route.getDuration());
 
-        return routeRepository.save(existingRoute);
+    return routeRepository.save(existingRoute);
 }
 }

@@ -11,7 +11,7 @@
 	<groupId>com.example</groupId>
 	<artifactId>get-routes</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>create-route</name>
+	<name>get-routes</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
 	<licenses>

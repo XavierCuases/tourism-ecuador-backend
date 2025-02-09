@@ -2,9 +2,12 @@ package com.example.get_routes.controller;
 
 import com.example.get_routes.models.Route;
 import com.example.get_routes.service.RouteService;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 
 @RestController
@@ -22,9 +25,13 @@ public class RouteController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Route> getRouteById(@PathVariable Long id) {
-        return ResponseEntity.ok(routeService.getRouteById(id));
-    }
+    public ResponseEntity<?> getRouteById(@PathVariable Long id) {
+        try {
+            Route route = routeService.getRouteById(id);
+            return ResponseEntity.ok(route);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: La ruta con ID " + id + " no existe.");
+        }
 
-    
+    }
 }

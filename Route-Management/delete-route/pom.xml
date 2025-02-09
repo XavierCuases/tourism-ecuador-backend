@@ -11,7 +11,7 @@
 	<groupId>com.example</groupId>
 	<artifactId>delete-route</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>create-route</name>
+	<name>delete-route</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
 	<licenses>
