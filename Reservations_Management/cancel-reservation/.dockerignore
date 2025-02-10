@@ -1,0 +1,10 @@
+*.pyc
+*.pyo
+*.pyd
+*.so
+__pycache__/
+*.egg
+*.egg-info/
+*.dist-info/
+*.manifest
+*.spec
