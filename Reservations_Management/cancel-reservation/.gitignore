@@ -21,4 +21,9 @@ share/python-wheels/
 .installed.cfg
 *.manifest
 *.spec
+venv/
+.env/
+.venv/
+
 .env
+
