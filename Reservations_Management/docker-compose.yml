@@ -13,7 +13,7 @@ services:
     ports:
       - "3307:3306"
     volumes:
-      - mysql_data:/var/lib/mysql  # 📌 Aquí se guardan los datos
+      - mysql_data:/var/lib/mysql  
 
   flask_app:
     build: .

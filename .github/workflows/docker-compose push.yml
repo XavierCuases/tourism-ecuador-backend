@@ -1,0 +1,35 @@
+name: Deploy to EC2
+
+on:
+  workflow_run:
+    workflows: ["Build and Push Docker Images"]  
+    types:
+      - completed
+
+jobs:
+  deploy_to_ec2:
+    runs-on: ubuntu-latest
+    steps:
+      
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+    
+      - name: Copy docker-compose.yml to EC2 using SCP
+        run: |
+          scp -o StrictHostKeyChecking=no -i ${{ secrets.AWS_PRIVATE_KEY }} docker-compose.yml ubuntu@${{ secrets.AWS_HOST }}:/home/ubuntu/
+
+      - name: SSH into EC2 and run docker-compose
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.AWS_HOST }}
+          username: ubuntu
+          key: ${{ secrets.AWS_PRIVATE_KEY }}
+          script: |
+            # 4. Descargar las últimas imágenes de Docker Hub
+            cd /home/ubuntu
+            sudo docker-compose pull
+
+            # 5. Detener los contenedores antiguos y levantar los nuevos
+            sudo docker-compose down || true  # Detener contenedores existentes
+            sudo docker-compose up -d  # Levantar los nuevos contenedores
