@@ -1,0 +1,49 @@
+openapi: 3.0.0
+info:
+  title: Consult Reservation API
+  version: 1.0.0
+paths:
+  /reservas:
+    get:
+      summary: Get all reservations
+      description: Returns a list of all reservations
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    usuario_id:
+                      type: integer
+                      example: 101
+                    actividad_id:
+                      type: integer
+                      example: 505
+                    fecha_reserva:
+                      type: string
+                      format: date-time
+                      example: "2024-07-01T12:00:00Z"
+                    estado:
+                      type: string
+                      example: "pendiente"
+  /reservas/{id}:
+    get:
+      summary: Get a reservation by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Success
+        '404':
+          description: Not Found
