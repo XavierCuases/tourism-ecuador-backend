@@ -3,32 +3,41 @@ name: Build and Push Docker Images
 on:
   push:
     branches:
-      - "QA"  
-
+      - "QA"
     paths:
-      - 'Tourism_Activities_Management/**' 
+      - 'Tourism_Activities_Management/**'
 
 jobs:
   build_and_push:
     runs-on: ubuntu-latest
     steps:
-  
+
+      # Paso 1: Clonar el código
       - name: Checkout code
         uses: actions/checkout@v3
 
-     
+      # Paso 2: Instalar Docker Compose
+      - name: Install Docker Compose
+        run: |
+          sudo curl -L "https://github.com/docker/compose/releases/download/v2.11.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+          docker-compose --version  # Verifica que Docker Compose esté instalado correctamente
+
+      # Paso 3: Iniciar sesión en Docker Hub
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-              
+      # Paso 4: Construir y subir imágenes usando Docker Compose
       - name: Build and Push Docker Images
         run: |
+          # Cambiar al directorio donde está el archivo docker-compose.yml
           cd Tourism_Activities_Management
+          
           # Construir las imágenes usando Docker Compose
-          docker-compose build  # Construir las imágenes
+          docker-compose build
 
           # Subir las imágenes a Docker Hub
-          docker-compose push  # Subir las imágenes a Docker Hub
+          docker-compose push
