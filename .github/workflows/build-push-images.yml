@@ -23,7 +23,7 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-    
+              cd Tourism_Activities_Management
       - name: Build and Push Docker Images
         run: |
           # Construir las imágenes usando Docker Compose
