@@ -3,9 +3,8 @@ version: '3.8'
 services:
   create-activity:
     build:
-      context: ./Tourism_Activities_Management/create-activity  # Contexto de construcción para este servicio
-      dockerfile: Dockerfile  # Nombre del archivo Dockerfile, si no es el estándar, especifica el nombre
-    image: xaviercuases/create-activity:latest
+      context: ./create-activity  
+    image: xaviercuases/create-activity:latest  
     container_name: create-activity
     restart: always
     ports:
@@ -17,10 +16,8 @@ services:
 
   list-activities:
     build:
-      context: ./Tourism_Activities_Management/list-activities
-      dockerfile: Dockerfile
-    image: xaviercuases/list-activities:latest
-    container_name: list-activities
+      context: ./list-activities  
+    image: xaviercuases/list-activities:latest 
     restart: always
     ports:
       - "4003:4003"
@@ -31,10 +28,8 @@ services:
 
   update-activity:
     build:
-      context: ./Tourism_Activities_Management/update-activity
-      dockerfile: Dockerfile
-    image: xaviercuases/update-activity:latest
-    container_name: update-activity
+      context: ./update-activity  
+    image: xaviercuases/update-activity:latest  
     restart: always
     ports:
       - "4004:4004"
@@ -45,9 +40,8 @@ services:
 
   delete-activity:
     build:
-      context: ./Tourism_Activities_Management/delete-activity
-      dockerfile: Dockerfile
-    image: xaviercuases/delete-activity:latest
+      context: ./delete-activity  
+    image: xaviercuases/delete-activity:latest  
     container_name: delete-activity
     restart: always
     ports:
@@ -58,7 +52,7 @@ services:
       - MONGO_URI=mongodb://mongodb_container:27017/ActivitiesDB
 
   mongodb:
-    image: xaviercuases/mongo-database:latest
+    image: xaviercuases/mongo-database:latest  
     container_name: mongodb_container
     restart: always
     ports:

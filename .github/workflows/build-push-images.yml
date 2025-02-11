@@ -36,12 +36,6 @@ jobs:
           # Cambiar al directorio donde está el archivo docker-compose.yml
           cd Tourism_Activities_Management
           
-          # Verificar si Dockerfile está en las carpetas correctas
-          ls ./create-activity/Dockerfile
-          ls ./list-activities/Dockerfile
-          ls ./update-activity/Dockerfile
-          ls ./delete-activity/Dockerfile
-
           # Construir las imágenes usando Docker Compose
           docker-compose build
 
