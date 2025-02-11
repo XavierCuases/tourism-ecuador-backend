@@ -3,9 +3,7 @@ name: Build and Push Docker Images
 on:
   push:
     branches:
-      - "QA"
-    paths:
-      - 'Tourism_Activities_Management/**'
+      - main
 
 jobs:
   build_and_push:
@@ -16,36 +14,28 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Paso 2: Debug - Verificar la estructura de archivos
-      - name: Debug - List files
-        run: ls -R
-        working-directory: Tourism_Activities_Management
-
-      # Paso 3: Instalar Docker Compose
+      # Paso 2: Instalar Docker Compose
       - name: Install Docker Compose
         run: |
           sudo curl -L "https://github.com/docker/compose/releases/download/v2.11.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
           sudo chmod +x /usr/local/bin/docker-compose
           docker-compose --version  # Verifica que Docker Compose esté instalado correctamente
 
-      # Paso 4: Iniciar sesión en Docker Hub
+      # Paso 3: Iniciar sesión en Docker Hub de forma segura
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # Paso 5: Asegurar que los Dockerfile tienen los permisos correctos
-      - name: Set correct permissions for Dockerfiles
-        run: |
-          chmod 644 Tourism_Activities_Management/create-activity/Dockerfile
-          chmod 644 Tourism_Activities_Management/list-activities/Dockerfile
-          chmod 644 Tourism_Activities_Management/update-activity/Dockerfile
-          chmod 644 Tourism_Activities_Management/delete-activity/Dockerfile
-
-      # Paso 6: Construir y subir imágenes usando Docker Compose
+      # Paso 4: Construir y subir imágenes usando Docker Compose
       - name: Build and Push Docker Images
-        working-directory: Tourism_Activities_Management
         run: |
+          # Cambiar al directorio donde está docker-compose.yml
+          cd Tourism_Activities_Management
+          
+          # Construir las imágenes sin usar caché (para evitar errores de versiones anteriores)
           docker-compose build --no-cache
+
+          # Subir las imágenes a Docker Hub
           docker-compose push
