@@ -16,6 +16,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+
       # Paso 2: Instalar Docker Compose
       - name: Install Docker Compose
         run: |
@@ -31,6 +32,9 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       # Paso 4: Construir y subir imágenes usando Docker Compose
+
+      - name: Clean Docker Cache
+        run: docker system prune -af
       - name: Build and Push Docker Images
         run: |
           # Cambiar al directorio donde está el archivo docker-compose.yml
