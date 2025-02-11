@@ -13,11 +13,13 @@ jobs:
       
       - name: Checkout code
         uses: actions/checkout@v3
-
+        with:
+         fetch-depth: 0
+  
     
       - name: Copy docker-compose.yml to EC2 using SCP
         run: |
-          scp -o StrictHostKeyChecking=no -i ${{ secrets.AWS_PRIVATE_KEY }} Tourism_Activities_Management/docker-compose.yml ubuntu@${{ secrets.AWS_HOST }}:/home/ubuntu/
+          scp -o StrictHostKeyChecking=no -i ${{ secrets.AWS_PRIVATE_KEY }} docker-compose.yml ubuntu@${{ secrets.AWS_HOST }}:/home/ubuntu/
 
       - name: SSH into EC2 and run docker-compose
         uses: appleboy/ssh-action@v1.2.0
