@@ -18,11 +18,6 @@ jobs:
         with:
          fetch-depth: 0
 
-      - name: Verificar archivos clonados
-        run: |
-           pwd
-           ls -R
-
       - name: Moverse a la carpeta de Tourism_Activities_Management
         run: cd Tourism_Activities_Management
 
