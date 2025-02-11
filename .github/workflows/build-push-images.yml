@@ -37,7 +37,7 @@ jobs:
           cd Tourism_Activities_Management
           
           # Construir las imágenes usando Docker Compose
-          docker-compose build
+          docker-compose build --no-cache
 
           # Subir las imágenes a Docker Hub
           docker-compose push
