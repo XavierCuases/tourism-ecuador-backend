@@ -33,8 +33,12 @@ jobs:
 
       # Paso 4: Construir y subir imágenes usando Docker Compose
 
-      - name: Clean Docker Cache
-        run: docker system prune -af
+      - name: Set correct permissions for Dockerfiles
+        run: |
+          chmod 644 create-activity/Dockerfile
+          chmod 644 list-activities/Dockerfile
+          chmod 644 update-activity/Dockerfile
+          chmod 644 delete-activity/Dockerfile
       - name: Build and Push Docker Images
         run: |
           # Cambiar al directorio donde está el archivo docker-compose.yml
