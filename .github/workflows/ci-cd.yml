@@ -41,22 +41,10 @@ jobs:
     needs: build_and_push
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - name: Esperar para asegurar que las imágenes estén listas
-        run: sleep 30  # Espera de seguridad
-
       - name: Crear archivo de clave privada
         run: |
           echo "${{ secrets.AWS_PRIVATE_KEY }}" > clave4.pem
           chmod 600 clave4.pem
-
-      - name: Copy docker-compose.yml to EC2 using SCP
-        run: |
-          scp -o StrictHostKeyChecking=no -i clave4.pem docker-compose.yml ubuntu@${{ secrets.AWS_HOST }}:/home/ubuntu/
 
       - name: SSH into EC2 and run docker-compose
         uses: appleboy/ssh-action@v1.2.0
@@ -69,7 +57,4 @@ jobs:
             sudo docker-compose pull
             sudo docker-compose down || true
             sudo docker-compose up -d
-
-      - name: Eliminar archivo de clave privada
-        run: rm -f clave4.pem
 
