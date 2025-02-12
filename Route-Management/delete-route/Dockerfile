@@ -10,7 +10,7 @@ FROM openjdk:17-jdk-slim
 
 WORKDIR /app
 
-COPY --from=build /target/delete-route-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=build /app/delete-route/target/create-route-0.0.1-SNAPSHOT.jar app.jar
 
 EXPOSE 5008
 
