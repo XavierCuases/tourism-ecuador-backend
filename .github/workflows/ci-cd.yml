@@ -47,12 +47,7 @@ jobs:
           fetch-depth: 0
 
       - name: Esperar para asegurar que las imágenes estén listas
-        run: sleep 30  # Espera de seguridad
-
-      - name: Verificar que Docker Hub tenga la imagen
-        run: |
-          docker pull myimage:latest  # Reemplázalo con la imagen correcta
-        continue-on-error: true
+        run: sleep 10  # Espera de seguridad
 
       - name: Copy docker-compose.yml to EC2 using SCP
         run: |
