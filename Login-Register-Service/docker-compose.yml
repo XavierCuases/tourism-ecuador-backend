@@ -1,35 +1,35 @@
 version: '3.8'
 
 services:
-  
   auth-service:
     build:
-      context: ./auth-service  
-      dockerfile: Dockerfile  
+      context: ./auth-service
+    image: xaviercuases/auth-service:latest
     container_name: auth-service
+    restart: always
     ports:
-      - "3001:3001" 
+      - "3001:3001"  
     environment:
-      - DB_HOST=users.c20pppmbajcg.us-east-1.rds.amazonaws.com 
-      - DB_PORT=5432
-      - DB_USER=postgres
-      - DB_PASSWORD=Federer.-
-      - DB_NAME=users  
-      - JWT_SECRET=your_jwt_secret_key
-      - ADMIN_TOKEN=supersecreto123
+      DB_HOST_US: ${DB_HOST_US}
+      DB_PORT_US: ${DB_PORT_US}
+      DB_USER_US: ${DB_USER_US}
+      DB_PASSWORD_US: ${DB_PASSWORD_US}
+      DB_NAME_US: ${DB_NAME_US}
+      JWT_SECRET_US: ${JWT_SECRET_US}
 
-  
-  register-service:
+  register-user-service:
     build:
-      context: ./register-user-service  
-      dockerfile: Dockerfile       
-    container_name: register-service
+      context: ./register-user-service
+    image: xaviercuases/register-user-service:latest
+    container_name: register-user-service
+    restart: always
     ports:
       - "3000:3000"  
     environment:
-      - DB_HOST=users.c20pppmbajcg.us-east-1.rds.amazonaws.com  
-      - DB_PORT=5432
-      - DB_USER=postgres
-      - DB_PASSWORD=Federer.-
-      - DB_NAME=users  
-      - JWT_SECRET=your_jwt_secret_key
+      DB_HOST_US: ${DB_HOST_US}
+      DB_PORT_US: ${DB_PORT_US}
+      DB_USER_US: ${DB_USER_US}
+      DB_PASSWORD_US: ${DB_PASSWORD_US}
+      DB_NAME_US: ${DB_NAME_US}
+      JWT_SECRET_US: ${JWT_SECRET_US}
+
