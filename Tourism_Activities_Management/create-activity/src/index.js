@@ -22,7 +22,7 @@ server.start().then(() => {
   server.applyMiddleware({ app });
 
   app.get('/', (req, res) => {
-    res.send('The Create activities microservice is running 14');
+    res.send('The Create activities microservice is running 13');
   });
 
   const PORT = process.env.PORT || 4001;
