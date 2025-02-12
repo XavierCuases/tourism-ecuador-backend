@@ -7,7 +7,7 @@ exports.registerUser = async (req, res) => {
         console.log('[DEBUG] Request Headers:', req.headers);
 
         console.log('[DEBUG] Admin-Token received:', req.header('Admin-Token'));
-        console.log('[DEBUG] Expected Admin-Token:', process.env.ADMIN_TOKEN);
+        console.log('[DEBUG] Expected Admin-Token:', process.env.ADMIN_TOKEN_US); 
 
         if (!name || !email || !password) {
             console.error('[ERROR] Missing required fields.');
@@ -21,7 +21,7 @@ exports.registerUser = async (req, res) => {
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        const isAdminAuthorized = req.header('Admin-Token') === process.env.ADMIN_TOKEN;
+        const isAdminAuthorized = req.header('Admin-Token') === process.env.ADMIN_TOKEN_US;
 
         console.log('[DEBUG] Is admin authorized:', isAdminAuthorized);
 
@@ -47,7 +47,6 @@ exports.registerUser = async (req, res) => {
         });
     } catch (error) {
         console.error('[ERROR] Error during registration:', error);
-
         res.status(500).json({ error: 'Error registering user' });
     }
 };
