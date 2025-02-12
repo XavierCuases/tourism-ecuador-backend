@@ -11,7 +11,7 @@ sequelize.sync({ alter: true })
         const PORT = process.env.PORT || 3001;
         app.listen(PORT, () => {
             console.log(`Server running at http://localhost:${PORT}`);
-            console.log(`Swagger2 UI is available at http://localhost:${PORT}/api-docs`);
+            console.log(`Swagger3 UI is available at http://localhost:${PORT}/api-docs`);
         });
     })
     .catch(error => {

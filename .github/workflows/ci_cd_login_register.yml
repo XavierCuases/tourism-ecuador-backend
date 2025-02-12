@@ -29,7 +29,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Construir y Subir Imágenes Docker
-        working-directory: Login_Register_Service  
+        working-directory: Login-Register-Service  
         run: |
           docker-compose build --no-cache
           docker-compose push
