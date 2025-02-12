@@ -16,6 +16,14 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Set environment variables from GitHub secrets
+        run: |
+          echo "DB_HOST_US=${{ secrets.DB_HOST_US }}" >> $GITHUB_ENV
+          echo "DB_PORT_US=${{ secrets.DB_PORT_US }}" >> $GITHUB_ENV
+          echo "DB_USER_US=${{ secrets.DB_USER_US }}" >> $GITHUB_ENV
+          echo "DB_PASSWORD_US=${{ secrets.DB_PASSWORD_US }}" >> $GITHUB_ENV
+          echo "DB_NAME_RO=${{ secrets.DB_NAME_RO }}" >> $GITHUB_ENV
+
       - name: Instalar Docker Compose
         run: |
           sudo curl -L "https://github.com/docker/compose/releases/download/v2.11.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
