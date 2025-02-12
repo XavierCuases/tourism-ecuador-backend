@@ -14,7 +14,7 @@ services:
       DB_PORT_US: ${DB_PORT_US}
       DB_USER_US: ${DB_USER_US}
       DB_PASSWORD_US: ${DB_PASSWORD_US}
-      DB_NAME_US: ${DB_NAME_US}
+      DB_NAME_US: ${DB_NAME_RO}
 
   get-routes:
     build:
@@ -29,7 +29,7 @@ services:
       DB_PORT_US: ${DB_PORT_US}
       DB_USER_US: ${DB_USER_US}
       DB_PASSWORD_US: ${DB_PASSWORD_US}
-      DB_NAME_US: ${DB_NAME_US}
+      DB_NAME_US: ${DB_NAME_RO}
 
   update-route:
     build:
@@ -44,7 +44,7 @@ services:
       DB_PORT_US: ${DB_PORT_US}
       DB_USER_US: ${DB_USER_US}
       DB_PASSWORD_US: ${DB_PASSWORD_US}
-      DB_NAME_US: ${DB_NAME_US}
+      DB_NAME_US: ${DB_NAME_RO}
 
   delete-route:
     build:
@@ -59,4 +59,4 @@ services:
       DB_PORT_US: ${DB_PORT_US}
       DB_USER_US: ${DB_USER_US}
       DB_PASSWORD_US: ${DB_PASSWORD_US}
-      DB_NAME_US: ${DB_NAME_US}
+      DB_NAME_US: ${DB_NAME_RO}
