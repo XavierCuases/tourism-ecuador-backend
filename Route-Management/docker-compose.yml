@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  create-route:
+    build:
+      context: ./create-route
+    image: xaviercuases/create-route:latest
+    container_name: create-route
+    restart: always
+    ports:
+      - "5005:5005"
+    environment:
+      DB_HOST_US: ${DB_HOST_US}
+      DB_PORT_US: ${DB_PORT_US}
+      DB_USER_US: ${DB_USER_US}
+      DB_PASSWORD_US: ${DB_PASSWORD_US}
+      DB_NAME_US: ${DB_NAME_US}
+
+  get-routes:
+    build:
+      context: ./get-routes
+    image: xaviercuases/get-routes:latest
+    container_name: get-routes
+    restart: always
+    ports:
+      - "5006:5006"
+    environment:
+      DB_HOST_US: ${DB_HOST_US}
+      DB_PORT_US: ${DB_PORT_US}
+      DB_USER_US: ${DB_USER_US}
+      DB_PASSWORD_US: ${DB_PASSWORD_US}
+      DB_NAME_US: ${DB_NAME_US}
+
+  update-route:
+    build:
+      context: ./update-route
+    image: xaviercuases/update-route:latest
+    container_name: update-route
+    restart: always
+    ports:
+      - "5007:5007"
+    environment:
+      DB_HOST_US: ${DB_HOST_US}
+      DB_PORT_US: ${DB_PORT_US}
+      DB_USER_US: ${DB_USER_US}
+      DB_PASSWORD_US: ${DB_PASSWORD_US}
+      DB_NAME_US: ${DB_NAME_US}
+
+  delete-route:
+    build:
+      context: ./delete-route
+    image: xaviercuases/delete-route:latest
+    container_name: delete-route
+    restart: always
+    ports:
+      - "5008:5008"
+    environment:
+      DB_HOST_US: ${DB_HOST_US}
+      DB_PORT_US: ${DB_PORT_US}
+      DB_USER_US: ${DB_USER_US}
+      DB_PASSWORD_US: ${DB_PASSWORD_US}
+      DB_NAME_US: ${DB_NAME_US}
