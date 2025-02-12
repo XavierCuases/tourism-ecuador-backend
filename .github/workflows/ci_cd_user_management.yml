@@ -1,14 +1,6 @@
 name: CI/CD User Management
 
 on:
-  pull_request:
-    branches:
-      - main  
-    paths:
-      - 'User_Management/**'
-    types:
-      - opened
-      - synchronize 
   push:
     branches:
       - QA
