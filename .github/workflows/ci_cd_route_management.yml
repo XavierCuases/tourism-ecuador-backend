@@ -36,11 +36,14 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Construir y Subir Imágenes Docker
+      - name: Construir las imágenes Docker con detalles
         working-directory: Route-Management
         run: |
-          docker-compose build --no-cache
-          docker-compose push
+            # Construir las imágenes con detalles de progreso
+            docker-compose build --no-cache --progress=plain
+        
+            # Ver los logs resumidos
+            docker-compose logs --tail=50 --no-color
 
   deploy_to_ec2:
     needs: build_and_push
