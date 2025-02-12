@@ -14,7 +14,7 @@ setupSwagger(app);
 app.use('/api', userRoutes);
 
 sequelize.authenticate().then(() => {
-    console.log('Database connected EXi!');
+    console.log('Database connected EXit!');
 }).catch(err => {
     console.log('Database connection error:', err);
 });
