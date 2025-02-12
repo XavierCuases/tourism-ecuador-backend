@@ -5,7 +5,7 @@ on:
     branches:
       - QA
     paths:
-      - 'Login_Register_Service/**'
+      - 'Login-Register-Service/**'
 
 jobs:
   build_and_push:
