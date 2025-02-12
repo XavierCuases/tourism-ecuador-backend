@@ -1,8 +1,17 @@
-*.jar
-*.class
-*.log
-*.iml
-.DS_Store
-.idea/
-.mvn/
 
+*.log
+
+
+.mvn/
+.idea/
+.vscode/
+
+
+.DS_Store
+Thumbs.db
+
+.git/
+.gitmodules
+
+.env
+*.iml

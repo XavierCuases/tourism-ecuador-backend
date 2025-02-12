@@ -3,7 +3,7 @@ version: '3.8'
 services:
   create-route:
     build:
-      context: ./create-route
+      context: ./create-route    
     image: xaviercuases/create-route:latest
     container_name: create-route
     restart: always
@@ -18,7 +18,7 @@ services:
 
   get-routes:
     build:
-      context: ./get-routes
+      context: ./get-routes    
     image: xaviercuases/get-routes:latest
     container_name: get-routes
     restart: always
@@ -33,7 +33,7 @@ services:
 
   update-route:
     build:
-      context: ./update-route
+      context: ./update-route    
     image: xaviercuases/update-route:latest
     container_name: update-route
     restart: always
@@ -48,7 +48,7 @@ services:
 
   delete-route:
     build:
-      context: ./delete-route
+      context: ./delete-route    
     image: xaviercuases/delete-route:latest
     container_name: delete-route
     restart: always

@@ -10,8 +10,8 @@ FROM openjdk:17-jdk-slim
 
 WORKDIR /app
 
-COPY --from=build /app/get-routes/target/create-route-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=build /app/target/get-routes-0.0.1-SNAPSHOT.jar app.jar
 
-EXPOSE 5007
+EXPOSE 5006
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
