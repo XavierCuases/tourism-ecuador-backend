@@ -24,15 +24,20 @@ jobs:
           echo "DB_PASSWORD_US=${{ secrets.DB_PASSWORD_US }}" >> $GITHUB_ENV
           echo "DB_NAME_RO=${{ secrets.DB_NAME_RO }}" >> $GITHUB_ENV
 
-      - name: Instalar Docker y eliminar contenedor anterior
+      - name: Instalar Docker CE y eliminar contenedores antiguos
         run: |
-          # Actualizar apt y eliminar containerd si está presente
+          # Eliminar cualquier instalación de Docker anterior (docker.io)
           sudo apt-get update
-          sudo apt-get remove --purge containerd containerd.io -y
-          sudo apt-get install -y docker.io
+          sudo apt-get remove --purge docker.io containerd runc -y
 
-          # Instalar containerd.io después de eliminar el paquete conflictivo
-          sudo apt-get install -y containerd.io
+          # Instalar Docker CE desde el repositorio oficial de Docker
+          sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+          sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+          sudo apt-get update
+          sudo apt-get install -y docker-ce containerd.io
+
+          # Iniciar y habilitar Docker
           sudo systemctl start docker
           sudo systemctl enable docker
           docker --version
@@ -93,7 +98,7 @@ jobs:
             cd /home/ubuntu
 
             # Asegurarse de que Docker está instalado
-            sudo apt-get install -y docker.io
+            sudo apt-get install -y docker-ce containerd.io
             sudo systemctl start docker
             sudo systemctl enable docker
 
