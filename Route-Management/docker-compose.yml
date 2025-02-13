@@ -4,14 +4,14 @@ services:
   create-route:
     build:
       context: ./create-route  
-    image: ${{ secrets.DOCKER_USERNAME }}/create-route:latest  
+    image: "${{ secrets.DOCKER_USERNAME }}/create-route:latest"  
     ports:
       - "5005:5005"
 
   get-routes:
     build:
       context: ./get-routes
-    image: ${{ secrets.DOCKER_USERNAME }}/get-routes:latest
+    image: "${{ secrets.DOCKER_USERNAME }}/get-routes:latest"  
     container_name: get-routes
     ports:
       - "5006:5006"
@@ -19,7 +19,7 @@ services:
   update-route:
     build:
       context: ./update-route
-    image: ${{ secrets.DOCKER_USERNAME }}/update-route:latest
+    image: "${{ secrets.DOCKER_USERNAME }}/update-route:latest"  
     container_name: update-route
     ports:
       - "5007:5007"
@@ -27,7 +27,7 @@ services:
   delete-route:
     build:
       context: ./delete-route
-    image: ${{ secrets.DOCKER_USERNAME }}/delete-route:latest
+    image: "${{ secrets.DOCKER_USERNAME }}/delete-route:latest"  # Aquí también
     container_name: delete-route
     ports:
       - "5008:5008"

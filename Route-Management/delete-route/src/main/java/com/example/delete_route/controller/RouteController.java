@@ -22,7 +22,7 @@ public class RouteController {
     public ResponseEntity<?> deleteRoute(@PathVariable Long id) {
         try {
             routeService.deleteRoute(id);
-            return ResponseEntity.ok("Ruta eliminada correctamente2.");
+            return ResponseEntity.ok("Ruta3 eliminada correctamente2.");
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: No se puede eliminar, la ruta con ID " + id + " no existe.");
         }
