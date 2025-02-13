@@ -37,13 +37,13 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Construir y Subir Imágenes Docker con Docker Compose
-        working-directory: Reservation-Management
+        working-directory: Reservation_Management
         run: |
           # Construir las imágenes usando Docker Compose
           sudo docker-compose build
 
           # Subir las imágenes a Docker Hub usando Docker Compose
-          # sudo docker-compose push
+          sudo docker-compose push
 
   deploy_to_ec2:
     needs: build_and_push
@@ -79,6 +79,7 @@ jobs:
             echo "Iniciando sesión en EC2..."
             cd /home/ec2-user
 
+            # Asegurarse de que docker-compose esté disponible
             sudo docker-compose pull
             sudo docker-compose down || true
             sudo docker-compose up -d
