@@ -58,7 +58,6 @@ jobs:
            sudo docker build -t ${{ secrets.DOCKER_USERNAME }}/update-route:latest ./update-route
            sudo docker build -t ${{ secrets.DOCKER_USERNAME }}/delete-route:latest ./delete-route
 
-
            
   deploy_to_ec2:
     needs: build_and_push
