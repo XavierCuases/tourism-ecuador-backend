@@ -43,7 +43,7 @@ jobs:
           sudo docker-compose build
 
           # Subir las imágenes a Docker Hub usando Docker Compose
-          sudo docker-compose push
+          # sudo docker-compose push
 
   deploy_to_ec2:
     needs: build_and_push
