@@ -74,9 +74,11 @@ jobs:
           key: ${{ secrets.AWS_PRIVATE_KEY }}
           script: |
             echo "Iniciando sesión en EC2..."
-            cd /usr/local/bin
-
-            # Asegurarse de que docker-compose esté disponible
-            sudo docker-compose pull
-            sudo docker-compose down || true
-            sudo docker-compose up -d
+            cd /home/ec2-user  
+ 
+             which docker-compose || echo "docker-compose no se encuentra en la ruta especificada"
+             /usr/local/bin/docker-compose --version  
+  
+   
+             /usr/local/bin/docker-compose pull
+             /usr/local/bin/docker-compose down || true
