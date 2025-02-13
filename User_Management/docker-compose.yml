@@ -1,53 +1,53 @@
 version: '3.8'
 
 services:
-  list-users:
+  create-reserve:
     build:
-      context: ./list-users
-    image: xaviercuases/list-users:latest
-    container_name: list-users
+      context: ./create-reserve
+    image: xaviercuases/create-reserve:latest
+    container_name: create-reserve
     restart: always
     ports:
-      - "7000:7000"
+      - "8000:8000"
     environment:
-      DB_HOST_US: ${DB_HOST_US}
-      DB_PORT_US: ${DB_PORT_US}
-      DB_USER_US: ${DB_USER_US}
-      DB_PASSWORD_US: ${DB_PASSWORD_US}
-      DB_NAME_US: ${DB_NAME_US}
-      JWT_SECRET_US: ${JWT_SECRET_US}
-      ADMIN_TOKEN_US: ${ADMIN_TOKEN_US}
+      DB_HOST_RE: ${DB_HOST_RE}
+      DB_PORT_RE: ${DB_PORT_RE}
+      DB_USER_RE: ${DB_USER_RE}
+      DB_PASSWORD_RE: ${DB_PASSWORD_RE}
+      DB_NAME_RE: ${DB_NAME_RE}
+      SECRET_KEY_US: ${SECRET_KEY_US}
+      DEBUG_RE: ${DEBUG_RE}
 
-  update-user:
+  consult-reservation:
     build:
-      context: ./update-user
-    image: xaviercuases/update-user:latest
-    container_name: update-user
+      context: ./consult-reservation
+    image: xaviercuases/consult-reservation:latest
+    container_name: consult-reservation
     restart: always
     ports:
-      - "7001:7001"
+      - "8001:8001"
     environment:
-      DB_HOST_US: ${DB_HOST_US}
-      DB_PORT_US: ${DB_PORT_US}
-      DB_USER_US: ${DB_USER_US}
-      DB_PASSWORD_US: ${DB_PASSWORD_US}
-      DB_NAME_US: ${DB_NAME_US}
-      JWT_SECRET_US: ${JWT_SECRET_US}
-      ADMIN_TOKEN_US: ${ADMIN_TOKEN_US}
+      DB_HOST_RE: ${DB_HOST_RE}
+      DB_PORT_RE: ${DB_PORT_RE}
+      DB_USER_RE: ${DB_USER_RE}
+      DB_PASSWORD_RE: ${DB_PASSWORD_RE}
+      DB_NAME_RE: ${DB_NAME_RE}
+      SECRET_KEY_US: ${SECRET_KEY_US}
+      DEBUG_RE: ${DEBUG_RE}
 
-  delete-user:
+  cancel-reservation:
     build:
-      context: ./delete-user
-    image: xaviercuases/delete-user:latest
-    container_name: delete-user
+      context: ./cancel-reservation
+    image: xaviercuases/cancel-reservation:latest
+    container_name: cancel-reservation
     restart: always
     ports:
-      - "7002:7002"
+      - "8002:8002"
     environment:
-      DB_HOST_US: ${DB_HOST_US}
-      DB_PORT_US: ${DB_PORT_US}
-      DB_USER_US: ${DB_USER_US}
-      DB_PASSWORD_US: ${DB_PASSWORD_US}
-      DB_NAME_US: ${DB_NAME_US}
-      JWT_SECRET_US: ${JWT_SECRET_US}
-      ADMIN_TOKEN_US: ${ADMIN_TOKEN_US}
+      DB_HOST_RE: ${DB_HOST_RE}
+      DB_PORT_RE: ${DB_PORT_RE}
+      DB_USER_RE: ${DB_USER_RE}
+      DB_PASSWORD_RE: ${DB_PASSWORD_RE}
+      DB_NAME_RE: ${DB_NAME_RE}
+      SECRET_KEY_US: ${SECRET_KEY_US}
+      DEBUG_RE: ${DEBUG_RE}
