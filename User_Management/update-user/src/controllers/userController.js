@@ -11,8 +11,8 @@ exports.listUsers = async (req, res) => {
 };
 
 exports.updateUser = async (req, res) => {
-    const { id } = req.params;  
-    const { name, email, password, role } = req.body;  
+    const { id } = req.params;
+    const { name, email, password, role } = req.body;
 
     try {
         const user = await User.findOne({ where: { id } });
@@ -21,10 +21,14 @@ exports.updateUser = async (req, res) => {
             return res.status(404).json({ message: "User not found" });
         }
 
+        const emailExists = await User.findOne({ where: { email } });
+        if (emailExists && emailExists.id !== user.id) {
+            return res.status(400).json({ message: "Email is already in use" });
+        }
+
         let hashedPassword = password;
         if (password) {
-            
-            hashedPassword = await bcrypt.hash(password, 10);  
+            hashedPassword = await bcrypt.hash(password, 10);
         }
 
         await user.update({ name, email, password: hashedPassword, role });
