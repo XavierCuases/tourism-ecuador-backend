@@ -13,12 +13,13 @@ exports.login = async (req, res) => {
 
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(401).json({ message: 'Invalid credentials1' });
+            return res.status(401).json({ message: 'Invalid credentials' });
         }
+        
         const token = jwt.sign(
             { id: user.id, email: user.email, role: user.role }, 
             process.env.JWT_SECRET_US, 
-            { expiresIn: '1h' } 
+            { expiresIn: '1h' }
         );
 
         res.json({
@@ -29,5 +30,40 @@ exports.login = async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Internal Server Error' });
+    }
+};
+
+exports.updateUser = async (req, res) => {
+    const { id } = req.params;
+    const { name, email, password } = req.body;
+
+    try {
+        let user = await User.findByPk(id);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        user.name = name || user.name;
+        user.email = email || user.email;
+        if (password) {
+            user.password = await bcrypt.hash(password, 10);
+        }
+
+        await user.save();
+
+        const newToken = jwt.sign(
+            { id: user.id, email: user.email, role: user.role },
+            process.env.JWT_SECRET_US,
+            { expiresIn: '1h' }
+        );
+
+        res.json({
+            message: 'User updated successfully',
+            token: newToken, 
+            role: user.role,
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error updating the user' });
     }
 };
