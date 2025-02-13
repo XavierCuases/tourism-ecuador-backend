@@ -79,6 +79,7 @@ jobs:
              which docker-compose || echo "docker-compose no se encuentra en la ruta especificada"
              /usr/local/bin/docker-compose --version  
   
-   
+  
              /usr/local/bin/docker-compose pull
              /usr/local/bin/docker-compose down || true
+             /usr/local/bin/docker-compose up -d
