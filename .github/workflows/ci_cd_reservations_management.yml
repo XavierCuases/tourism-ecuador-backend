@@ -42,7 +42,7 @@ jobs:
         working-directory: Reservations_Management
         run: |
           # Construir las imágenes usando Docker Compose
-          sudo docker-compose build
+          sudo docker-compose build --no-cache
 
           # Listar las imágenes Docker para verificar que se han construido correctamente
           sudo docker images
