@@ -26,37 +26,85 @@ jobs:
 
       - name: Instalar Docker CE y eliminar contenedores antiguos
         run: |
+        
           sudo apt-get update
           sudo apt-get remove --purge docker.io containerd runc -y
+        
           sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
           curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
           sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
           sudo apt-get update
           sudo apt-get install -y docker-ce containerd.io
+
           sudo systemctl start docker
           sudo systemctl enable docker
           docker --version
-
-      # Paso para verificar el login manual en Docker Hub
-      - name: Test Docker login
-        run: |
-          echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
-
+          
       - name: Login en Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-      
+          ecr: auto
+          logout: true
+
       - name: Construir y Subir Imágenes Docker
         working-directory: Route-Management
         run: |
-          sudo docker build -t ${{ secrets.DOCKER_USERNAME }}/create-route:latest ./create-route
-          sudo docker build -t ${{ secrets.DOCKER_USERNAME }}/get-routes:latest ./get-routes
-          sudo docker build -t ${{ secrets.DOCKER_USERNAME }}/update-route:latest ./update-route
-          sudo docker build -t ${{ secrets.DOCKER_USERNAME }}/delete-route:latest ./delete-route
+        
+          # Construir las imágenes Docker usando la variable secreta DOCKER_USERNAME
+           sudo docker build -t ${{ secrets.DOCKER_USERNAME }}/create-route:latest ./create-route
+           sudo docker build -t ${{ secrets.DOCKER_USERNAME }}/get-routes:latest ./get-routes
+           sudo docker build -t ${{ secrets.DOCKER_USERNAME }}/update-route:latest ./update-route
+           sudo docker build -t ${{ secrets.DOCKER_USERNAME }}/delete-route:latest ./delete-route
 
-          #sudo docker push ${{ secrets.DOCKER_USERNAME }}/create-route:latest
-          #sudo docker push ${{ secrets.DOCKER_USERNAME }}/get-routes:latest
-          #sudo docker push ${{ secrets.DOCKER_USERNAME }}/update-route:latest
-          #sudo docker push ${{ secrets.DOCKER_USERNAME }}/delete-route:latest
+
+           
+
+
+  deploy_to_ec2:
+    needs: build_and_push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Crear archivo de clave privada
+        run: |
+          echo "${{ secrets.AWS_PRIVATE_KEY }}" > clave4.pem
+          chmod 600 clave4.pem
+
+      - name: Verificar conexión SSH antes de ejecutar comandos
+        run: |
+          echo "Probando conexión a ${{ secrets.AWS_HOST_RO }}"
+          ping -c 3 ${{ secrets.AWS_HOST_RO }} || echo "No responde al ping"
+          ssh -o StrictHostKeyChecking=no -i clave4.pem ec2-user${{ secrets.AWS_HOST_RO }} "echo 'Conexión SSH exitosa'"
+        continue-on-error: true
+
+      - name: Exportar variables de entorno para Docker
+        run: |
+          echo "DB_HOST_US=${{ secrets.DB_HOST_US }}" >> $GITHUB_ENV
+          echo "DB_PORT_US=${{ secrets.DB_PORT_US }}" >> $GITHUB_ENV
+          echo "DB_USER_US=${{ secrets.DB_USER_US }}" >> $GITHUB_ENV
+          echo "DB_PASSWORD_US=${{ secrets.DB_PASSWORD_US }}" >> $GITHUB_ENV
+          echo "DB_NAME_US=${{ secrets.DB_NAME_RO }}" >> $GITHUB_ENV
+
+      - name: SSH into EC2 and run Docker commands
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.AWS_HOST_RO }}
+          username: ec2-user
+          key: ${{ secrets.AWS_PRIVATE_KEY }}
+          script: |
+            echo "Iniciando sesión en EC2..."
+            cd /home/ec2-user
+      
+            sudo docker stop create-route get-routes update-route delete-route || true
+            sudo docker rm create-route get-routes update-route delete-route || true
+
+            sudo docker pull xaviercuases/create-route:latest
+            sudo docker pull xaviercuases/get-routes:latest
+            sudo docker pull xaviercuases/update-route:latest
+            sudo docker pull xaviercuases/delete-route:latest
+
+            sudo docker run -d --restart always --name create-route -p 5005:5005 xaviercuases/create-route:latest
+            sudo docker run -d --restart always --name get-routes -p 5006:5006 xaviercuases/get-routes:latest
+            sudo docker run -d --restart always --name update-route -p 5007:5007 xaviercuases/update-route:latest
+            sudo docker run -d --restart always --name delete-route -p 5008:5008 xaviercuases/delete-route:latest
