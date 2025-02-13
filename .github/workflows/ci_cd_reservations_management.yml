@@ -45,22 +45,11 @@ jobs:
           # Construir las imágenes usando Docker Compose
           sudo docker-compose build
 
-      - name: Etiquetar las imágenes Docker
+          - name: List Docker images (for debugging)
+           run: sudo docker images
 
-        working-directory: Reservation_Management
-        run: |
-          # Etiquetar las imágenes con el nombre de usuario de Docker Hub y la etiqueta 'latest'
-          sudo docker tag create-reserve:latest xaviercuases/create-reserve:latest
-          sudo docker tag consult-reservation:latest xaviercuases/consult-reservation:latest
-          sudo docker tag cancel-reservation:latest xaviercuases/cancel-reservation:latest
-
-      - name: Subir las imágenes a Docker Hub
-        working-directory: Reservation_Management
-        run: |
-          # Subir las imágenes etiquetadas a Docker Hub
-          sudo docker push xaviercuases/create-reserve:latest
-          sudo docker push xaviercuases/consult-reservation:latest
-          sudo docker push xaviercuases/cancel-reservation:latest
+          # Subir las imágenes a Docker Hub usando Docker Compose
+          sudo docker-compose push
 
   deploy_to_ec2:
     needs: build_and_push
