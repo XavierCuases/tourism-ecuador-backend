@@ -1,9 +1,7 @@
 const cors = require('cors');
+const corsMiddleware = cors({
+    origin: 'http://localhost:8080', 
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], 
+});
 
-const corsOptions = {
-  origin: 'http://localhost:8080', 
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-};
-
-app.use(cors(corsOptions));
+module.exports = corsMiddleware;
