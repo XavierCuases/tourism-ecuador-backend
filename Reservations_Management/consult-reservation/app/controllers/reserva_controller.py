@@ -21,7 +21,7 @@ def get_all_reservas():
 def get_reserva(id):
     reserva = Reserva.query.get(id)
     if not reserva:
-        return jsonify({'message': 'Reserva no encontrada4'}), 404
+        return jsonify({'message': 'Reserva no encontrada'}), 404
 
     return jsonify({
         'id': reserva.id,

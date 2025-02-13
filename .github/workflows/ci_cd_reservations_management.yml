@@ -5,7 +5,7 @@ on:
     branches:
       - QA
     paths:
-      - 'Reservation_Management/**'
+      - 'Reservations_Management/**'
 
 jobs:
   build_and_push:
@@ -37,7 +37,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Construir y Subir Imágenes Docker con Docker Compose
-        working-directory: Reservation_Management
+        working-directory: Reservations_Management
         run: |
           # Construir las imágenes usando Docker Compose
           sudo docker-compose build
