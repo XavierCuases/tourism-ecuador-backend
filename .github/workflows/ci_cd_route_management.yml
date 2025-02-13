@@ -24,41 +24,27 @@ jobs:
           echo "DB_PASSWORD_US=${{ secrets.DB_PASSWORD_US }}" >> $GITHUB_ENV
           echo "DB_NAME_RO=${{ secrets.DB_NAME_RO }}" >> $GITHUB_ENV
 
-      - name: Instalar Docker CE y eliminar contenedores antiguos
+      - name: Instalar Docker Compose
         run: |
-        
-          sudo apt-get update
-          sudo apt-get remove --purge docker.io containerd runc -y
-        
-          sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
-          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-          sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-          sudo apt-get update
-          sudo apt-get install -y docker-ce containerd.io
+            sudo curl -L "https://github.com/docker/compose/releases/download/v2.11.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+            sudo chmod +x /usr/local/bin/docker-compose
+            docker-compose --version
 
-          sudo systemctl start docker
-          sudo systemctl enable docker
-          docker --version
-          
       - name: Login en Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          ecr: auto
-          logout: true
 
-      - name: Construir y Subir Imágenes Docker
+      - name: Construir y Subir Imágenes Docker con Docker Compose
         working-directory: Route-Management
         run: |
-        
-          # Construir las imágenes Docker usando la variable secreta DOCKER_USERNAME
-           sudo docker build -t ${{ secrets.DOCKER_USERNAME }}/create-route:latest ./create-route
-           sudo docker build -t ${{ secrets.DOCKER_USERNAME }}/get-routes:latest ./get-routes
-           sudo docker build -t ${{ secrets.DOCKER_USERNAME }}/update-route:latest ./update-route
-           sudo docker build -t ${{ secrets.DOCKER_USERNAME }}/delete-route:latest ./delete-route
+          # Construir las imágenes usando Docker Compose
+          sudo docker-compose build
 
-           
+          # Subir las imágenes a Docker Hub usando Docker Compose
+          sudo docker-compose push
+
   deploy_to_ec2:
     needs: build_and_push
     runs-on: ubuntu-latest
@@ -72,7 +58,7 @@ jobs:
         run: |
           echo "Probando conexión a ${{ secrets.AWS_HOST_RO }}"
           ping -c 3 ${{ secrets.AWS_HOST_RO }} || echo "No responde al ping"
-          ssh -o StrictHostKeyChecking=no -i clave4.pem ec2-user${{ secrets.AWS_HOST_RO }} "echo 'Conexión SSH exitosa'"
+          ssh -o StrictHostKeyChecking=no -i clave4.pem ec2-user@${{ secrets.AWS_HOST_RO }} "echo 'Conexión SSH exitosa'"
         continue-on-error: true
 
       - name: Exportar variables de entorno para Docker
@@ -92,7 +78,7 @@ jobs:
           script: |
             echo "Iniciando sesión en EC2..."
             cd /home/ec2-user
-      
+
             sudo docker stop create-route get-routes update-route delete-route || true
             sudo docker rm create-route get-routes update-route delete-route || true
 
