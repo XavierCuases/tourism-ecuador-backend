@@ -29,7 +29,6 @@ jobs:
         
           sudo apt-get update
           sudo apt-get remove --purge docker.io containerd runc -y
-
         
           sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
           curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
@@ -37,7 +36,6 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y docker-ce containerd.io
 
-          # Iniciar y habilitar Docker
           sudo systemctl start docker
           sudo systemctl enable docker
           docker --version
@@ -51,13 +49,12 @@ jobs:
       - name: Construir y Subir Imágenes Docker
         working-directory: Route-Management
         run: |
-          # Construir cada microservicio
+        
           sudo docker build -t xaviercuases/create-route:latest ./create-route
           sudo docker build -t xaviercuases/get-routes:latest ./get-routes
           sudo docker build -t xaviercuases/update-route:latest ./update-route
           sudo docker build -t xaviercuases/delete-route:latest ./delete-route
 
-          # Subir las imágenes a Docker Hub
           sudo docker push xaviercuases/create-route:latest
           sudo docker push xaviercuases/get-routes:latest
           sudo docker push xaviercuases/update-route:latest
@@ -96,18 +93,15 @@ jobs:
           script: |
             echo "Iniciando sesión en EC2..."
             cd /home/ec2-user
-
-            # Detener y eliminar los contenedores existentes
+      
             sudo docker stop create-route get-routes update-route delete-route || true
             sudo docker rm create-route get-routes update-route delete-route || true
 
-            # Descargar las imágenes desde Docker Hub
             sudo docker pull xaviercuases/create-route:latest
             sudo docker pull xaviercuases/get-routes:latest
             sudo docker pull xaviercuases/update-route:latest
             sudo docker pull xaviercuases/delete-route:latest
 
-            # Levantar los contenedores con la opción --restart always
             sudo docker run -d --restart always --name create-route -p 5005:5005 xaviercuases/create-route:latest
             sudo docker run -d --restart always --name get-routes -p 5006:5006 xaviercuases/get-routes:latest
             sudo docker run -d --restart always --name update-route -p 5007:5007 xaviercuases/update-route:latest
