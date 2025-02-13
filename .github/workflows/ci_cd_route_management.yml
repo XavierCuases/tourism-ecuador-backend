@@ -60,8 +60,6 @@ jobs:
 
 
            
-
-
   deploy_to_ec2:
     needs: build_and_push
     runs-on: ubuntu-latest
