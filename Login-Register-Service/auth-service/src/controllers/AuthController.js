@@ -1,12 +1,12 @@
-const { User } = require('../models/UserModel');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
+const User = require('../models/UserModel'); 
 const jwt = require('jsonwebtoken');
 
 exports.login = async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        const user = await User.findOne({ where: { email } });
+        const user = await User.findOne({ where: { email } }); 
         if (!user) {
             return res.status(401).json({ message: 'Invalid credentials' });
         }
@@ -35,26 +35,18 @@ exports.login = async (req, res) => {
 
 exports.updateUser = async (req, res) => {
     const { id } = req.params;
-    const { name, email, password } = req.body;
+    const { name, email, password, role } = req.body;
 
     try {
-        let user = await User.findByPk(id);
+        let user = await User.findByPk(id);  
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        if (email && email !== user.email) {
-            const emailExists = await User.findOne({ where: { email } });
-            if (emailExists) {
-                return res.status(400).json({ message: 'Email is already in use' });
-            }
-        }
-
-    
         user.name = name || user.name;
         user.email = email || user.email;
         if (password) {
-            user.password = await bcrypt.hash(password, 10);  
+            user.password = await bcrypt.hash(password, 10);
         }
 
         await user.save();

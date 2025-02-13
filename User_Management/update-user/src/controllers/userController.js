@@ -1,36 +1,45 @@
-const bcrypt = require('bcryptjs');
-const { User } = require('../models/userModel');
+const { User } = require('../models/UserModel');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 exports.updateUser = async (req, res) => {
     const { id } = req.params;
     const { name, email, password, role } = req.body;
 
     try {
-       
-        const user = await User.findOne({ where: { id } });
-
-        
+        let user = await User.findByPk(id);
         if (!user) {
-            return res.status(404).json({ message: "User not found" });
+            return res.status(404).json({ message: 'User not found' });
         }
 
-        const emailExists = await User.findOne({ where: { email } });
-        if (emailExists && emailExists.id !== user.id) {
-            return res.status(400).json({ message: "Email is already in use" });
+       
+        if (email && email !== user.email) {
+            const emailExists = await User.findOne({ where: { email } });
+            if (emailExists) {
+                return res.status(400).json({ message: 'Email is already in use' });
+            }
         }
 
-        
-        let hashedPassword = password;
+        user.name = name || user.name;
+        user.email = email || user.email;
         if (password) {
-            hashedPassword = await bcrypt.hash(password, 10);
+            user.password = await bcrypt.hash(password, 10); 
         }
-        
-        await user.update({ name, email, password: hashedPassword, role });
 
-     
-        res.status(200).json({ message: "User updated successfully", user });
+        await user.save();
+
+        const newToken = jwt.sign(
+            { id: user.id, email: user.email, role: user.role },
+            process.env.JWT_SECRET_US,
+            { expiresIn: '1h' }
+        );
+
+        res.json({
+            message: 'User updated successfully',
+            token: newToken,
+            role: user.role,
+        });
     } catch (error) {
-        
-        res.status(500).json({ message: "Error updating user", error });
+        res.status(500).json({ message: 'Error updating the user' });
     }
 };
