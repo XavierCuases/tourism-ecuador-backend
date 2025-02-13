@@ -40,11 +40,12 @@ jobs:
         working-directory: Route-Management
         run: |
           # Construir las imágenes usando Docker Compose
-          sudo docker-compose build --no-cache
+          docker-compose build --no-cache
 
           # Subir las imágenes a Docker Hub usando Docker Compose
-          # sudo docker-compose push
+          docker-compose push
 
+          
   deploy_to_ec2:
     needs: build_and_push
     runs-on: ubuntu-latest
