@@ -13,7 +13,7 @@ def kill_uvicorn():
             print(f"Terminating process: {process.info['pid']} (uvicorn)")
             os.kill(process.info["pid"], signal.SIGTERM)
 
-kill_uvicorn()
+# kill_uvicorn()
 
 app = FastAPI()
 
@@ -50,4 +50,4 @@ signal.signal(signal.SIGTERM, handle_exit)
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8001, reload=False)
+    uvicorn.run(app, host="0.0.0.0", port=8000, reload=False)
