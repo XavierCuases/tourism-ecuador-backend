@@ -18,7 +18,7 @@ def cancelar_reserva(id):
     db.session.commit()
 
     return jsonify({
-        'message': 'Reserva cancelada exitosamente',
+        'message': 'Reserva cancelada exitosamente!',
         'id': reserva.id,
         'estado': reserva.estado
     }), 200

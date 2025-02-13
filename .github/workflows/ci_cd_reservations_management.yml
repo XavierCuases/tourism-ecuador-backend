@@ -18,11 +18,14 @@ jobs:
 
       - name: Set environment variables from GitHub secrets
         run: |
-          echo "DB_HOST_RE=${{ secrets.DB_HOST_RE }}" >> $GITHUB_ENV
-          echo "DB_PORT_RE=${{ secrets.DB_PORT_RE }}" >> $GITHUB_ENV
-          echo "DB_USER_RE=${{ secrets.DB_USER_RE }}" >> $GITHUB_ENV
-          echo "DB_PASSWORD_RE=${{ secrets.DB_PASSWORD_RE }}" >> $GITHUB_ENV
-          echo "DB_NAME_RE=${{ secrets.DB_NAME_RE }}" >> $GITHUB_ENV
+            echo "DB_HOST_RE=${{ secrets.DB_HOST_RE }}" >> $GITHUB_ENV
+            echo "DB_PORT_RE=${{ secrets.DB_PORT_RE }}" >> $GITHUB_ENV
+            echo "DB_USER_RE=${{ secrets.DB_USER_RE }}" >> $GITHUB_ENV
+            echo "DB_PASSWORD_RE=${{ secrets.DB_PASSWORD_RE }}" >> $GITHUB_ENV
+            echo "DB_NAME_RE=${{ secrets.DB_NAME_RE }}" >> $GITHUB_ENV
+            echo "SECRET_KEY_US=${{ secrets.SECRET_KEY_US }}" >> $GITHUB_ENV
+            echo "DEBUG_RE=${{ secrets.DEBUG_RE }}" >> $GITHUB_ENV
+        
 
       - name: Instalar Docker Compose
         run: |
@@ -42,8 +45,22 @@ jobs:
           # Construir las imágenes usando Docker Compose
           sudo docker-compose build
 
-          # Subir las imágenes a Docker Hub usando Docker Compose
-          sudo docker-compose push
+      - name: Etiquetar las imágenes Docker
+
+        working-directory: Reservation_Management
+        run: |
+          # Etiquetar las imágenes con el nombre de usuario de Docker Hub y la etiqueta 'latest'
+          sudo docker tag create-reserve:latest xaviercuases/create-reserve:latest
+          sudo docker tag consult-reservation:latest xaviercuases/consult-reservation:latest
+          sudo docker tag cancel-reservation:latest xaviercuases/cancel-reservation:latest
+
+      - name: Subir las imágenes a Docker Hub
+        working-directory: Reservation_Management
+        run: |
+          # Subir las imágenes etiquetadas a Docker Hub
+          sudo docker push xaviercuases/create-reserve:latest
+          sudo docker push xaviercuases/consult-reservation:latest
+          sudo docker push xaviercuases/cancel-reservation:latest
 
   deploy_to_ec2:
     needs: build_and_push
