@@ -52,15 +52,18 @@ jobs:
         working-directory: Route-Management
         run: |
         
-          sudo docker build -t xaviercuases/create-route:latest ./create-route
-          sudo docker build -t xaviercuases/get-routes:latest ./get-routes
-          sudo docker build -t xaviercuases/update-route:latest ./update-route
-          sudo docker build -t xaviercuases/delete-route:latest ./delete-route
+          # Construir las imágenes Docker usando la variable secreta DOCKER_USERNAME
+           sudo docker build -t ${{ secrets.DOCKER_USERNAME }}/create-route:latest ./create-route
+           sudo docker build -t ${{ secrets.DOCKER_USERNAME }}/get-routes:latest ./get-routes
+           sudo docker build -t ${{ secrets.DOCKER_USERNAME }}/update-route:latest ./update-route
+           sudo docker build -t ${{ secrets.DOCKER_USERNAME }}/delete-route:latest ./delete-route
 
-          sudo docker push xaviercuases/create-route:latest
-          sudo docker push xaviercuases/get-routes:latest
-          sudo docker push xaviercuases/update-route:latest
-          sudo docker push xaviercuases/delete-route:latest
+          # Realizar el push de las imágenes a Docker Hub usando la variable secreta DOCKER_USERNAME
+           sudo docker push ${{ secrets.DOCKER_USERNAME }}/create-route:latest
+           sudo docker push ${{ secrets.DOCKER_USERNAME }}/get-routes:latest
+           sudo docker push ${{ secrets.DOCKER_USERNAME }}/update-route:latest
+           sudo docker push ${{ secrets.DOCKER_USERNAME }}/delete-route:latest
+
 
   deploy_to_ec2:
     needs: build_and_push
