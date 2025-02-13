@@ -56,7 +56,7 @@ jobs:
           sudo docker build -t ${{ secrets.DOCKER_USERNAME }}/update-route:latest ./update-route
           sudo docker build -t ${{ secrets.DOCKER_USERNAME }}/delete-route:latest ./delete-route
 
-          sudo docker push ${{ secrets.DOCKER_USERNAME }}/create-route:latest
-          sudo docker push ${{ secrets.DOCKER_USERNAME }}/get-routes:latest
-          sudo docker push ${{ secrets.DOCKER_USERNAME }}/update-route:latest
-          sudo docker push ${{ secrets.DOCKER_USERNAME }}/delete-route:latest
+          #sudo docker push ${{ secrets.DOCKER_USERNAME }}/create-route:latest
+          #sudo docker push ${{ secrets.DOCKER_USERNAME }}/get-routes:latest
+          #sudo docker push ${{ secrets.DOCKER_USERNAME }}/update-route:latest
+          #sudo docker push ${{ secrets.DOCKER_USERNAME }}/delete-route:latest
