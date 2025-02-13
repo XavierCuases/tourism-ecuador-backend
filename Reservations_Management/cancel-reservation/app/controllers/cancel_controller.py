@@ -12,7 +12,7 @@ def cancelar_reserva(id):
         return jsonify({'message': 'Reserva no encontrada'}), 404
 
     if reserva.estado.lower() == "cancelada":
-        return jsonify({'message': 'La reserva ya está cancelada'}), 400
+        return jsonify({'message': 'La reserva ya está cancelada!'}), 400
 
     reserva.estado = "cancelada"
     db.session.commit()
