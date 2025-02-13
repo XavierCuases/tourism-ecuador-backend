@@ -26,11 +26,11 @@ jobs:
 
       - name: Instalar Docker CE y eliminar contenedores antiguos
         run: |
-          # Eliminar cualquier instalación de Docker anterior (docker.io)
+        
           sudo apt-get update
           sudo apt-get remove --purge docker.io containerd runc -y
 
-          # Instalar Docker CE desde el repositorio oficial de Docker
+        
           sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
           curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
           sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
@@ -52,16 +52,16 @@ jobs:
         working-directory: Route-Management
         run: |
           # Construir cada microservicio
-          docker build -t xaviercuases/create-route:latest ./create-route
-          docker build -t xaviercuases/get-routes:latest ./get-routes
-          docker build -t xaviercuases/update-route:latest ./update-route
-          docker build -t xaviercuases/delete-route:latest ./delete-route
+          sudo docker build -t xaviercuases/create-route:latest ./create-route
+          sudo docker build -t xaviercuases/get-routes:latest ./get-routes
+          sudo docker build -t xaviercuases/update-route:latest ./update-route
+          sudo docker build -t xaviercuases/delete-route:latest ./delete-route
 
           # Subir las imágenes a Docker Hub
-          docker push xaviercuases/create-route:latest
-          docker push xaviercuases/get-routes:latest
-          docker push xaviercuases/update-route:latest
-          docker push xaviercuases/delete-route:latest
+          sudo docker push xaviercuases/create-route:latest
+          sudo docker push xaviercuases/get-routes:latest
+          sudo docker push xaviercuases/update-route:latest
+          sudo docker push xaviercuases/delete-route:latest
 
   deploy_to_ec2:
     needs: build_and_push
@@ -76,7 +76,7 @@ jobs:
         run: |
           echo "Probando conexión a ${{ secrets.AWS_HOST_RO }}"
           ping -c 3 ${{ secrets.AWS_HOST_RO }} || echo "No responde al ping"
-          ssh -o StrictHostKeyChecking=no -i clave4.pem ubuntu@${{ secrets.AWS_HOST_RO }} "echo 'Conexión SSH exitosa'"
+          ssh -o StrictHostKeyChecking=no -i clave4.pem ec2-user${{ secrets.AWS_HOST_RO }} "echo 'Conexión SSH exitosa'"
         continue-on-error: true
 
       - name: Exportar variables de entorno para Docker
@@ -91,16 +91,11 @@ jobs:
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.AWS_HOST_RO }}
-          username: ubuntu
+          username: ec2-user
           key: ${{ secrets.AWS_PRIVATE_KEY }}
           script: |
             echo "Iniciando sesión en EC2..."
-            cd /home/ubuntu
-
-            # Asegurarse de que Docker está instalado
-            sudo apt-get install -y docker-ce containerd.io
-            sudo systemctl start docker
-            sudo systemctl enable docker
+            cd /home/ec2-user
 
             # Detener y eliminar los contenedores existentes
             sudo docker stop create-route get-routes update-route delete-route || true

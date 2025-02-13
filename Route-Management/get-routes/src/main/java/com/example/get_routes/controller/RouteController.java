@@ -30,7 +30,7 @@ public class RouteController {
             Route route = routeService.getRouteById(id);
             return ResponseEntity.ok(route);
         } catch (NoSuchElementException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: La ruta con IDE " + id + " no existe.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: La ruta con IDEr " + id + " no existe.");
         }
 
     }
