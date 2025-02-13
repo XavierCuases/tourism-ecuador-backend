@@ -24,14 +24,19 @@ jobs:
           echo "DB_PASSWORD_US=${{ secrets.DB_PASSWORD_US }}" >> $GITHUB_ENV
           echo "DB_NAME_RO=${{ secrets.DB_NAME_RO }}" >> $GITHUB_ENV
 
-      - name: Instalar Docker
+      - name: Instalar Docker y eliminar contenedor anterior
         run: |
+          # Actualizar apt y eliminar containerd si está presente
           sudo apt-get update
+          sudo apt-get remove --purge containerd containerd.io -y
           sudo apt-get install -y docker.io
+
+          # Instalar containerd.io después de eliminar el paquete conflictivo
+          sudo apt-get install -y containerd.io
           sudo systemctl start docker
           sudo systemctl enable docker
           docker --version
-
+          
       - name: Login en Docker Hub
         uses: docker/login-action@v2
         with:
@@ -86,6 +91,11 @@ jobs:
           script: |
             echo "Iniciando sesión en EC2..."
             cd /home/ubuntu
+
+            # Asegurarse de que Docker está instalado
+            sudo apt-get install -y docker.io
+            sudo systemctl start docker
+            sudo systemctl enable docker
 
             # Detener y eliminar los contenedores existentes
             sudo docker stop create-route get-routes update-route delete-route || true
