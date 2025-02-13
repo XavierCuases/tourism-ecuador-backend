@@ -74,7 +74,7 @@ jobs:
           key: ${{ secrets.AWS_PRIVATE_KEY }}
           script: |
             echo "Iniciando sesión en EC2..."
-            cd /home/ec2-user
+            cd /usr/local/bin
 
             # Asegurarse de que docker-compose esté disponible
             sudo docker-compose pull
