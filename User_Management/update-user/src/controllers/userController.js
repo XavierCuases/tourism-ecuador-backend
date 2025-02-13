@@ -1,5 +1,6 @@
 const { User } = require('../models/userModel');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 exports.updateUser = async (req, res) => {
     const { id } = req.params;
@@ -11,7 +12,6 @@ exports.updateUser = async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
 
-       
         if (email && email !== user.email) {
             const emailExists = await User.findOne({ where: { email } });
             if (emailExists) {
