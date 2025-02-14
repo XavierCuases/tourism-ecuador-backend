@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  create-route:
+    build:
+      context: ./create-route  
+    image: "xaviercuases/create-route:latest"  
+    ports:
+      - "5005:5005"
+
+  get-routes:
+    build:
+      context: ./get-routes
+    image: "xaviercuases/get-routes:latest"  
+    container_name: get-routes
+    ports:
+      - "5006:5006"
+
+  update-route:
+    build:
+      context: ./update-route
+    image: "xaviercuases/update-route:latest"  
+    container_name: update-route
+    ports:
+      - "5007:5007"
+
+  delete-route:
+    build:
+      context: ./delete-route
+    image: "xaviercuases/delete-route:latest"
+    container_name: delete-route
+    ports:
+      - "5008:5008"

@@ -1,0 +1,100 @@
+paths:
+  /graphql:
+    post:
+      summary: Create a new activity
+      tags:
+        - Activities
+      description: |
+        Send a GraphQL mutation to create a new activity in the database.
+        - All required fields (`name`, `location`, `date`) must be provided.
+        - Optional fields include `description`, `photos` (array of URLs), and `price`.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                query:
+                  type: string
+                  description: The GraphQL mutation to create an activity.
+                  example: |
+                    mutation {
+                      createActivity(
+                        name: "Mountain Hiking",
+                        location: "Andes",
+                        date: "2025-01-01",
+                        description: "A beautiful hike in the Andes",
+                        photos: ["https://example.com/photo1.jpg", "https://example.com/photo2.jpg"],
+                        price: 49.99
+                      ) {
+                        _id
+                        name
+                        location
+                        date
+                        description
+                        photos
+                        price
+                      }
+                    }
+      responses:
+        '200':
+          description: Activity created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      createActivity:
+                        type: object
+                        properties:
+                          _id:
+                            type: string
+                            description: Unique identifier of the created activity.
+                            example: "64c12345abcde1234567890f"
+                          name:
+                            type: string
+                            description: Name of the activity.
+                            example: "Mountain Hiking"
+                          location:
+                            type: string
+                            description: Location of the activity.
+                            example: "Andes"
+                          date:
+                            type: string
+                            format: date
+                            description: Date of the activity.
+                            example: "2025-01-01"
+                          description:
+                            type: string
+                            description: Description of the activity.
+                            example: "A beautiful hike in the Andes."
+                          photos:
+                            type: array
+                            items:
+                              type: string
+                              format: uri
+                              description: URLs of activity photos.
+                          price:
+                            type: number
+                            description: Price of the activity.
+                            example: 49.99
+        '400':
+          description: Bad request. Missing required fields or invalid data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        message:
+                          type: string
+                          description: Error message.
+                          example: "All fields (name, location, date) are required."

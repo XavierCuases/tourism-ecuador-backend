@@ -1,0 +1,57 @@
+swagger: "2.0"
+info:
+  title: User Authentication API
+  description: |
+    This API handles user authentication for the Ecuador Turístico platform.
+  version: "1.0.0"
+  contact:
+    email: support@ecuadorturistico.com
+host: localhost:3001
+basePath: /api
+schemes:
+  - http
+
+paths:
+  /api/login:
+    post:
+      summary: "Authenticate a user"
+      description: "Allows users to log in with their credentials and receive a JWT token."
+      consumes:
+        - application/json
+      parameters:
+        - name: email
+          in: body
+          description: "User's email"
+          required: true
+          type: "string"
+        - name: password
+          in: body
+          description: "User's password"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "Login successful"
+          schema:
+            type: "object"
+            properties:
+              token:
+                type: "string"
+                description: "JWT token for authentication"
+              message:
+                type: "string"
+                description: "Success message"
+        400:
+          description: "Invalid credentials"
+        500:
+          description: "Internal server error"
+
+  /api/logout:
+    post:
+      summary: "Log out the current user"
+      description: "Logs the user out by invalidating the JWT token."
+      responses:
+        200:
+          description: "Successfully logged out"
+        500:
+          description: "Internal server error"

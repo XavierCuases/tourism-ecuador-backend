@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  list-users:
+    build:
+      context: ./list-users
+    image: xaviercuases/list-users:latest
+    container_name: list-users
+    restart: always
+    ports:
+      - "7000:7000"
+    environment:
+      DB_HOST_US: ${DB_HOST_US}
+      DB_PORT_US: ${DB_PORT_US}
+      DB_USER_US: ${DB_USER_US}
+      DB_PASSWORD_US: ${DB_PASSWORD_US}
+      DB_NAME_US: ${DB_NAME_US}
+      JWT_SECRET_US: ${JWT_SECRET_US}
+      ADMIN_TOKEN_US: ${ADMIN_TOKEN_US}
+
+  update-user:
+    build:
+      context: ./update-user
+    image: xaviercuases/update-user:latest
+    container_name: update-user
+    restart: always
+    ports:
+      - "7001:7001"
+    environment:
+      DB_HOST_US: ${DB_HOST_US}
+      DB_PORT_US: ${DB_PORT_US}
+      DB_USER_US: ${DB_USER_US}
+      DB_PASSWORD_US: ${DB_PASSWORD_US}
+      DB_NAME_US: ${DB_NAME_US}
+      JWT_SECRET_US: ${JWT_SECRET_US}
+      ADMIN_TOKEN_US: ${ADMIN_TOKEN_US}
+
+  delete-user:
+    build:
+      context: ./delete-user
+    image: xaviercuases/delete-user:latest
+    container_name: delete-user
+    restart: always
+    ports:
+      - "7002:7002"
+    environment:
+      DB_HOST_US: ${DB_HOST_US}
+      DB_PORT_US: ${DB_PORT_US}
+      DB_USER_US: ${DB_USER_US}
+      DB_PASSWORD_US: ${DB_PASSWORD_US}
+      DB_NAME_US: ${DB_NAME_US}
+      JWT_SECRET_US: ${JWT_SECRET_US}
+      ADMIN_TOKEN_US: ${ADMIN_TOKEN_US}

@@ -1,0 +1,21 @@
+openapi: 3.0.0
+info:
+  title: Cancel Reservation API
+  version: 1.0.0
+paths:
+  /reservas/cancelar/{id}:
+    put:
+      summary: Cancelar una reserva
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Reserva cancelada exitosamente
+        '404':
+          description: Reserva no encontrada
+        '400':
+          description: La reserva ya está cancelada

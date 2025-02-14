@@ -1,0 +1,17 @@
+
+*.log
+
+
+.mvn/
+.idea/
+.vscode/
+
+
+.DS_Store
+Thumbs.db
+
+.git/
+.gitmodules
+
+.env
+*.iml

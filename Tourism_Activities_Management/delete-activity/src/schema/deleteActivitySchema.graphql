@@ -1,0 +1,17 @@
+type Activity {
+  _id: ID!
+  name: String!
+  location: String!
+  date: String!
+  description: String
+  photos: [String]
+  price: Float
+}
+
+type Mutation {
+  deleteActivity(id: ID!): Activity
+}
+
+type Query {
+  _empty: String
+}

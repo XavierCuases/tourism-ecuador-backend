@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  create-activity:
+    build:
+      context: ./create-activity  
+    image: xaviercuases/create-activity:latest  
+    container_name: create-activity
+    restart: always
+    ports:
+      - "4001:4001"
+    depends_on:
+      - mongodb
+    environment:
+      - MONGO_URI=mongodb://mongodb_container:27017/ActivitiesDB
+
+  list-activities:
+    build:
+      context: ./list-activities  
+    image: xaviercuases/list-activities:latest 
+    restart: always
+    ports:
+      - "4003:4003"
+    depends_on:
+      - mongodb
+    environment:
+      - MONGO_URI=mongodb://mongodb_container:27017/ActivitiesDB
+
+  update-activity:
+    build:
+      context: ./update-activity  
+    image: xaviercuases/update-activity:latest  
+    restart: always
+    ports:
+      - "4004:4004"
+    depends_on:
+      - mongodb
+    environment:
+      - MONGO_URI=mongodb://mongodb_container:27017/ActivitiesDB
+
+  delete-activity:
+    build:
+      context: ./delete-activity  
+    image: xaviercuases/delete-activity:latest  
+    container_name: delete-activity
+    restart: always
+    ports:
+      - "4005:4005"
+    depends_on:
+      - mongodb
+    environment:
+      - MONGO_URI=mongodb://mongodb_container:27017/ActivitiesDB
+
+  mongodb:
+    image: xaviercuases/mongo-database:latest  
+    container_name: mongodb_container
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:

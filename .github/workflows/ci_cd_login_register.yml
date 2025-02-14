@@ -1,0 +1,73 @@
+name: CI/CD Login Register
+
+on:
+  push:
+    branches:
+      - QA
+    paths:
+      - 'Login-Register-Service/**'
+
+jobs:
+  build_and_push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Instalar Docker Compose
+        run: |
+          sudo curl -L "https://github.com/docker/compose/releases/download/v2.11.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+          docker-compose --version
+
+      - name: Login en Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Construir y Subir Imágenes Docker
+        working-directory: Login-Register-Service  
+        run: |
+          docker-compose build --no-cache
+          docker-compose push
+
+  deploy_to_ec2:
+    needs: build_and_push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Crear archivo de clave privada
+        run: |
+          echo "${{ secrets.AWS_PRIVATE_KEY }}" > clave4.pem
+          chmod 600 clave4.pem
+
+      - name: Verificar conexión SSH antes de ejecutar comandos
+        run: |
+          echo "Probando conexión a ${{ secrets.AWS_HOST_LR }}"
+          ping -c 3 ${{ secrets.AWS_HOST_LR }} || echo "No responde al ping"
+          ssh -o StrictHostKeyChecking=no -i clave4.pem ec2-user@${{ secrets.AWS_HOST_LR }} "echo 'Conexión SSH exitosa'"
+        continue-on-error: true
+
+      - name: Exportar variables de entorno para Docker Compose
+        run: |
+          echo "DB_HOST_US=${{ secrets.DB_HOST_US }}" >> $GITHUB_ENV
+          echo "DB_PORT_US=${{ secrets.DB_PORT_US }}" >> $GITHUB_ENV
+          echo "DB_USER_US=${{ secrets.DB_USER_US }}" >> $GITHUB_ENV
+          echo "DB_PASSWORD_US=${{ secrets.DB_PASSWORD_US }}" >> $GITHUB_ENV
+          echo "DB_NAME_US=${{ secrets.DB_NAME_US }}" >> $GITHUB_ENV
+          echo "JWT_SECRET_US=${{ secrets.JWT_SECRET_US }}" >> $GITHUB_ENV
+          echo "ADMIN_TOKEN_US=${{ secrets.ADMIN_TOKEN_US }}" >> $GITHUB_ENV
+
+      - name: SSH into EC2 and run docker-compose
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.AWS_HOST_LR }}
+          username: ec2-user  
+          key: ${{ secrets.AWS_PRIVATE_KEY }}
+          script: |
+            cd /home/ec2-user/myapp  # Ruta donde está el docker-compose.yml y .env
+            sudo docker-compose pull
+            sudo docker-compose down || true
+            sudo docker-compose up -d

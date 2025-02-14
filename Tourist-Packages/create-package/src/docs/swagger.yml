@@ -1,0 +1,54 @@
+openapi: 3.0.0
+info:
+  title: "Create Tour Package API"
+  description: "API to create tour packages"
+  version: "1.0.0"
+servers:
+  - url: "http://localhost:3002/api"
+paths:
+  /packages:
+    post:
+      summary: "Create a new tour package"
+      operationId: "createPackage"
+      tags:
+        - "Packages"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: "Name of the tour package"
+                description:
+                  type: string
+                  description: "Description of the tour package"
+                price:
+                  type: number
+                  format: float
+                  description: "Price of the tour package"
+                duration:
+                  type: integer
+                  description: "Duration in days"
+      responses:
+        '201':
+          description: "Tour package created successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: "ID of the created package"
+                  name:
+                    type: string
+                  description:
+                    type: string
+                  price:
+                    type: number
+                    format: float
+                  duration:
+                    type: integer

@@ -1,0 +1,77 @@
+paths:
+  /graphql:
+    post:
+      summary: List all activities
+      tags:
+        - Activities
+      description: |
+        Send a GraphQL query to fetch a list of all activities.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                query:
+                  type: string
+                  description: The GraphQL query to list activities.
+                  example: |
+                    query {
+                      listActivities {
+                        _id
+                        name
+                        location
+                        date
+                        description
+                        photos
+                        price
+                      }
+                    }
+      responses:
+        '200':
+          description: Activities retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      listActivities:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            _id:
+                              type: string
+                              description: Unique identifier of the activity.
+                              example: "64c12345abcde1234567890f"
+                            name:
+                              type: string
+                              description: Name of the activity.
+                              example: "Mountain Hiking"
+                            location:
+                              type: string
+                              description: Location of the activity.
+                              example: "Andes"
+                            date:
+                              type: string
+                              format: date
+                              description: Date of the activity.
+                              example: "2025-01-01"
+                            description:
+                              type: string
+                              description: Description of the activity.
+                              example: "A beautiful hike in the Andes."
+                            photos:
+                              type: array
+                              items:
+                                type: string
+                                format: uri
+                                description: URLs of activity photos.
+                            price:
+                              type: number
+                              description: Price of the activity.
+                              example: 49.99

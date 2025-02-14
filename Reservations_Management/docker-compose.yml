@@ -1,0 +1,51 @@
+services:
+  create-reserve:
+    build:
+      context: ./create-reserve  
+    image: xaviercuases/create-reserve:latest
+    container_name: create-reserve
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      DB_HOST_RE: ${DB_HOST_RE}
+      DB_PORT_RE: ${DB_PORT_RE}
+      DB_USER_RE: ${DB_USER_RE}
+      DB_PASSWORD_RE: ${DB_PASSWORD_RE}
+      DB_NAME_RE: ${DB_NAME_RE}
+      SECRET_KEY_US: ${SECRET_KEY_US}
+      DEBUG_RE: ${DEBUG_RE}
+
+  consult-reservation:
+    build:
+      context: ./consult-reservation 
+    image: xaviercuases/consult-reservation:latest
+    container_name: consult-reservation
+    restart: always
+    ports:
+      - "8001:8001"
+    environment:
+      DB_HOST_RE: ${DB_HOST_RE}
+      DB_PORT_RE: ${DB_PORT_RE}
+      DB_USER_RE: ${DB_USER_RE}
+      DB_PASSWORD_RE: ${DB_PASSWORD_RE}
+      DB_NAME_RE: ${DB_NAME_RE}
+      SECRET_KEY_US: ${SECRET_KEY_US}
+      DEBUG_RE: ${DEBUG_RE}
+
+  cancel-reservation:
+    build:
+      context: ./cancel-reservation  
+    image: xaviercuases/cancel-reservation:latest
+    container_name: cancel-reservation
+    restart: always
+    ports:
+      - "8002:8002"
+    environment:
+      DB_HOST_RE: ${DB_HOST_RE}
+      DB_PORT_RE: ${DB_PORT_RE}
+      DB_USER_RE: ${DB_USER_RE}
+      DB_PASSWORD_RE: ${DB_PASSWORD_RE}
+      DB_NAME_RE: ${DB_NAME_RE}
+      SECRET_KEY_US: ${SECRET_KEY_US}
+      DEBUG_RE: ${DEBUG_RE}

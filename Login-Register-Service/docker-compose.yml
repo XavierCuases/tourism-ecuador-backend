@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  auth-service:
+    build:
+      context: ./auth-service
+    image: xaviercuases/auth-service:latest
+    container_name: auth-service
+    restart: always
+    ports:
+      - "3001:3001"  
+    environment:
+      DB_HOST_US: ${DB_HOST_US}
+      DB_PORT_US: ${DB_PORT_US}
+      DB_USER_US: ${DB_USER_US}
+      DB_PASSWORD_US: ${DB_PASSWORD_US}
+      DB_NAME_US: ${DB_NAME_US}
+      JWT_SECRET_US: ${JWT_SECRET_US}
+      ADMIN_TOKEN_US: ${ADMIN_TOKEN_US} 
+
+  register-user-service:
+    build:
+      context: ./register-user-service
+    image: xaviercuases/register-user-service:latest
+    container_name: register-user-service
+    restart: always
+    ports:
+      - "3000:3000"  
+    environment:
+      DB_HOST_US: ${DB_HOST_US}
+      DB_PORT_US: ${DB_PORT_US}
+      DB_USER_US: ${DB_USER_US}
+      DB_PASSWORD_US: ${DB_PASSWORD_US}
+      DB_NAME_US: ${DB_NAME_US}
+      JWT_SECRET_US: ${JWT_SECRET_US}
+      ADMIN_TOKEN_US: ${ADMIN_TOKEN_US}

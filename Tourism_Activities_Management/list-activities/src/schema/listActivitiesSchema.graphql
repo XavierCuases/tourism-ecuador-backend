@@ -1,0 +1,14 @@
+type Query {
+  listActivities: [Activity] 
+  getActivityById(id: ID!): Activity 
+}
+
+type Activity {
+  _id: ID!
+  name: String!
+  location: String!
+  date: String!
+  description: String
+  photos: [String]
+  price: Float
+}

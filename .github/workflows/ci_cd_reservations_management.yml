@@ -1,0 +1,85 @@
+name: CI/CD Reservation Management
+
+on:
+  push:
+    branches:
+      - QA
+    paths:
+      - 'Reservations_Management/**'
+
+jobs:
+  build_and_push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set environment variables from GitHub secrets
+        run: |
+            echo "DB_HOST_RE=${{ secrets.DB_HOST_RE }}" >> $GITHUB_ENV
+            echo "DB_PORT_RE=${{ secrets.DB_PORT_RE }}" >> $GITHUB_ENV
+            echo "DB_USER_RE=${{ secrets.DB_USER_RE }}" >> $GITHUB_ENV
+            echo "DB_PASSWORD_RE=${{ secrets.DB_PASSWORD_RE }}" >> $GITHUB_ENV
+            echo "DB_NAME_RE=${{ secrets.DB_NAME_RE }}" >> $GITHUB_ENV
+            echo "SECRET_KEY_US=${{ secrets.SECRET_KEY_US }}" >> $GITHUB_ENV
+            echo "DEBUG_RE=${{ secrets.DEBUG_RE }}" >> $GITHUB_ENV
+          
+      - name: Instalar Docker Compose
+        run: |
+            sudo curl -L "https://github.com/docker/compose/releases/download/v2.11.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+            sudo chmod +x /usr/local/bin/docker-compose
+            docker-compose --version
+
+      - name: Login en Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Construir y Subir Imágenes Docker con Docker Compose
+        working-directory: Reservations_Management
+        run: |
+          # Construir las imágenes usando Docker Compose
+          docker-compose build --no-cache
+
+          # Listar las imágenes Docker para verificar que se han construido correctamente
+          docker images
+
+          # Subir las imágenes a Docker Hub usando Docker Compose
+          docker-compose push
+
+  deploy_to_ec2:
+    needs: build_and_push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Crear archivo de clave privada
+        run: |
+          echo "${{ secrets.AWS_PRIVATE_KEY }}" > clave4.pem
+          chmod 600 clave4.pem
+
+      - name: Verificar conexión SSH antes de ejecutar comandos
+        run: |
+          echo "Probando conexión a ${{ secrets.AWS_HOST_RE }}"
+          ping -c 3 ${{ secrets.AWS_HOST_RE }} || echo "No responde al ping"
+          ssh -o StrictHostKeyChecking=no -i clave4.pem ec2-user@${{ secrets.AWS_HOST_RE }} "echo 'Conexión SSH exitosa'"
+        continue-on-error: true
+
+      - name: SSH into EC2 and run Docker commands
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.AWS_HOST_RE }}
+          username: ec2-user
+          key: ${{ secrets.AWS_PRIVATE_KEY }}
+          script: |
+            echo "Iniciando sesión en EC2..."
+            cd /home/ec2-user  
+ 
+             which docker-compose || echo "docker-compose no se encuentra en la ruta especificada"
+             /usr/local/bin/docker-compose --version  
+  
+  
+             /usr/local/bin/docker-compose pull
+             /usr/local/bin/docker-compose down || true
+             /usr/local/bin/docker-compose up -d

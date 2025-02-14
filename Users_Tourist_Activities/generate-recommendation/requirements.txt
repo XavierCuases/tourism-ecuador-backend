@@ -1,0 +1,5 @@
+flask
+graphene
+graphene-sqlalchemy
+neo4j
+python-dotenv

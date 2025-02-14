@@ -1,0 +1,98 @@
+paths:
+  /graphql:
+    post:
+      summary: Update an existing activity
+      tags:
+        - Activities
+      description: |
+        Send a GraphQL mutation to update an existing activity in the database.
+        - The `id` of the activity must be provided.
+        - Any field (`name`, `location`, `date`, `description`, `photos`, `price`) can be updated.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                query:
+                  type: string
+                  description: The GraphQL mutation to update an activity.
+                  example: |
+                    mutation {
+                      updateActivity(
+                        id: "64c12345abcde1234567890f",
+                        name: "Updated Activity Name",
+                        description: "Updated description",
+                        price: 99.99
+                      ) {
+                        _id
+                        name
+                        location
+                        date
+                        description
+                        photos
+                        price
+                      }
+                    }
+      responses:
+        '200':
+          description: Activity updated successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      updateActivity:
+                        type: object
+                        properties:
+                          _id:
+                            type: string
+                            description: Unique identifier of the updated activity.
+                            example: "64c12345abcde1234567890f"
+                          name:
+                            type: string
+                            description: Updated name of the activity.
+                            example: "Updated Activity Name"
+                          location:
+                            type: string
+                            description: Updated location of the activity.
+                            example: "Updated Location"
+                          date:
+                            type: string
+                            format: date
+                            description: Updated date of the activity.
+                            example: "2025-01-01"
+                          description:
+                            type: string
+                            description: Updated description of the activity.
+                            example: "Updated description."
+                          photos:
+                            type: array
+                            items:
+                              type: string
+                              format: uri
+                              description: URLs of updated activity photos.
+                          price:
+                            type: number
+                            description: Updated price of the activity.
+                            example: 99.99
+        '400':
+          description: Bad request. Validation error or missing required fields.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        message:
+                          type: string
+                          description: Error message.
+                          example: "A valid ID is required to update an activity."
