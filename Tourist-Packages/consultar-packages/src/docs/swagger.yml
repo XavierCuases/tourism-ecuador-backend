@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
-  title: "Tour Packages API"
-  description: "Documentation of the API for querying tour packages"
+  title: "Create Tour Package API"
+  description: "API to create and retrieve tour packages"
   version: "1.0.0"
 servers:
   - url: "http://localhost:3002/api"
@@ -9,12 +9,12 @@ paths:
   /packages:
     get:
       summary: "Get all tour packages"
-      operationId: "getPackages"
+      operationId: "getAllPackages"
       tags:
         - "Packages"
       responses:
         '200':
-          description: "List of tour packages"
+          description: "List of all tour packages"
           content:
             application/json:
               schema:
@@ -38,3 +38,40 @@ paths:
                     duration:
                       type: integer
                       description: "Duration in days"
+  /packages/{id}:
+    get:
+      summary: "Get a tour package by ID"
+      operationId: "getPackageById"
+      tags:
+        - "Packages"
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: "ID of the package"
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: "Tour package found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: "Package ID"
+                  name:
+                    type: string
+                  description:
+                    type: string
+                  price:
+                    type: number
+                    format: float
+                  duration:
+                    type: integer
+        '404':
+          description: "Package not found"
+        '500':
+          description: "Internal server error"
