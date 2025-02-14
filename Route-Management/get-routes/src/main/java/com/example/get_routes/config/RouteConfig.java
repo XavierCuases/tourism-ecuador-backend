@@ -12,9 +12,10 @@ public class RouteConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         
         registry.addMapping("/**")  
-                .allowedOrigins("http://3.84.48.248:8082/")  
+                .allowedOrigins("http://3.84.48.248:8080/")  
                 .allowedMethods("GET", "POST", "PUT", "DELETE")  
                 .allowedHeaders("*")  
                 .allowCredentials(true);  
     }
+    
 }
